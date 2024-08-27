@@ -17,6 +17,12 @@ const payloadIsVerified = await verify(request.body, signature, keyId, {
 // true or false
 ```
 
+## Dreamcode
+
+While implementing the lower-level functionality, we also dream big: what would our dream SDK for Coplitot extensions look like? Please have a look and share your thoughts and ideas:
+
+[dreamcode.md](./dreamcode.md)
+
 ## Contributing
 
 Please see [CONTRIBUTING.md](.github/CONTRIBUTING.md)
