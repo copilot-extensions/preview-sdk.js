@@ -24,6 +24,28 @@ const payloadIsVerified = await verifyRequestByKeyId(
 
 ## API
 
+### `async verifyRequestByKeyId(rawBody, signature, keyId, options)`
+
+Verify the request payload using the provided signature and key ID. The method will request the public key from GitHub's API for the given keyId and then verify the payload.
+
+The `options` argument is optional. It can contain a `token` to authenticate the request to GitHub's API, or a custom `request` instance to use for the request.
+
+```js
+import { verifyRequestByKeyId } from "@copilot-extensions/preview-sdk";
+
+const payloadIsVerified = await verifyRequestByKeyId(
+  request.body,
+  signature,
+  key
+);
+
+// with token
+await verifyRequestByKeyId(request.body, signature, key, { token: "ghp_1234" });
+
+// with custom octokit request instance
+await verifyRequestByKeyId(request.body, signature, key, { request });
+```
+
 ### `async fetchVerificationKeys(options)`
 
 Fetches public keys for verifying copilot extension requests [from GitHub's API](https://api.github.com/meta/public_keys/copilot_api)
