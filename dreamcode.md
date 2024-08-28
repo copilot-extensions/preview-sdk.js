@@ -66,6 +66,19 @@ copilotExtension.on(
   }
 );
 
+copilotExtension.registerSkill({
+  name: "sayHi",
+  arguments: {
+    name: {
+      type: "string",
+      description: "The name of the person to say hi to",
+    },
+  },
+  async run({ name, octokit, log }) {
+    return `Hello, ${name}!`;
+  },
+});
+
 createServer(createNodeMiddleware(copilotExtension)).listen(3000);
 copilotExtension.log.info("Listening on http://localhost:3000");
 ```
