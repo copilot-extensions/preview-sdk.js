@@ -68,13 +68,13 @@ copilotExtension.on(
 
 copilotExtension.registerSkill({
   name: "sayHi",
-  arguments: {
+  parameters: {
     name: {
       type: "string",
       description: "The name of the person to say hi to",
     },
   },
-  async run({ name, octokit, log }) {
+  async run({ name }, { octokit, log }) {
     return `Hello, ${name}!`;
   },
 });
