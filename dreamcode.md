@@ -66,7 +66,7 @@ copilotExtension.on(
   }
 );
 
-copilotExtension.registerSkill({
+copilotExtension.registerFunction({
   name: "sayHi",
   parameters: {
     name: {
