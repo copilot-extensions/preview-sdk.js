@@ -5,12 +5,44 @@ import { createVerify } from "node:crypto";
 import { request as defaultRequest } from "@octokit/request";
 import { RequestError } from "@octokit/request-error";
 
-/** @type {import('.').VerifyInterface} */
-export async function verify(
+/** @type {import('.').VerifyRequestByKeyIdInterface} */
+export async function verifyRequest(rawBody, signature, key) {
+  // verify arguments
+  assertValidString(rawBody, "Invalid payload");
+  assertValidString(signature, "Invalid signature");
+  assertValidString(key, "Invalid key");
+
+  const verify = createVerify("SHA256").update(rawBody);
+
+  // verify signature
+  try {
+    return verify.verify(key, signature, "base64");
+  } catch {
+    return false;
+  }
+}
+
+/** @type {import('.').FetchVerificationKeysInterface} */
+export async function fetchVerificationKeys(
+  { token = "", request = defaultRequest } = { request: defaultRequest }
+) {
+  const { data } = await request("GET /meta/public_keys/copilot_api", {
+    headers: token
+      ? {
+          Authorization: `token ${token}`,
+        }
+      : {},
+  });
+
+  return data.public_keys;
+}
+
+/** @type {import('.').VerifyRequestByKeyIdInterface} */
+export async function verifyRequestByKeyId(
   rawBody,
   signature,
   keyId,
-  { token = "", request = defaultRequest } = { request: defaultRequest },
+  requestOptions
 ) {
   // verify arguments
   assertValidString(rawBody, "Invalid payload");
@@ -18,35 +50,25 @@ export async function verify(
   assertValidString(keyId, "Invalid keyId");
 
   // receive valid public keys from GitHub
-  const requestOptions = request.endpoint("GET /meta/public_keys/copilot_api", {
-    headers: token
-      ? {
-          Authorization: `token ${token}`,
-        }
-      : {},
-  });
-  const response = await request(requestOptions);
-  const { data: keys } = response;
+  const keys = await fetchVerificationKeys(requestOptions);
 
   // verify provided key Id
-  const publicKey = keys.public_keys.find(
-    (key) => key.key_identifier === keyId,
-  );
+  const publicKey = keys.find((key) => key.key_identifier === keyId);
+
   if (!publicKey) {
-    throw new RequestError(
-      "[@copilot-extensions/preview-sdk] No public key found matching key identifier",
-      404,
+    const keyNotFoundError = Object.assign(
+      new Error(
+        "[@copilot-extensions/preview-sdk] No public key found matching key identifier"
+      ),
       {
-        request: requestOptions,
-        response,
-      },
+        keyId,
+        keys,
+      }
     );
+    throw keyNotFoundError;
   }
 
-  const verify = createVerify("SHA256").update(rawBody);
-
-  // verify signature
-  return verify.verify(publicKey.key, signature, "base64");
+  return verifyRequest(rawBody, signature, publicKey.key);
 }
 
 function assertValidString(value, message) {

@@ -5,8 +5,27 @@ type RequestOptions = {
   request?: RequestInterface;
   token?: string;
 };
+export type VerificationPublicKey = {
+  key_identifier: string;
+  key: string;
+  is_current: boolean;
+};
 
-interface VerifyInterface {
+interface VerifyRequestInterface {
+  (
+    rawBody: string,
+    signature: string,
+    key: string
+  ): Promise<boolean>;
+}
+
+interface FetchVerificationKeysInterface {
+  (
+    requestOptions?: RequestOptions,
+  ): Promise<VerificationPublicKey[]>;
+}
+
+interface VerifyRequestByKeyIdInterface {
   (
     rawBody: string,
     signature: string,
@@ -15,4 +34,6 @@ interface VerifyInterface {
   ): Promise<boolean>;
 }
 
-export declare const verify: VerifyInterface;
+export declare const verifyRequest: VerifyRequestInterface;
+export declare const fetchVerificationKeys: FetchVerificationKeysInterface;
+export declare const verifyRequestByKeyId: VerifyRequestByKeyIdInterface;
