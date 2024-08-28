@@ -22,7 +22,7 @@ import {
 } from "@octokit/copilot-extension";
 
 const copilotExtension = new CopilotExtension({
-  agent: "my-app-name",
+  userAgent: "my-app-name",
 });
 
 copilotExtension.on(
