@@ -71,7 +71,11 @@ Verify the request payload using the provided signature and key. Note that the r
 ```js
 import { verify } from "@copilot-extensions/preview-sdk";
 
-const payloadIsVerified = await verify(request.body, signature, key);
+const payloadIsVerified = await verifyRequestPayload(
+  request.body,
+  signature,
+  key
+);
 // true or false
 ```
 
