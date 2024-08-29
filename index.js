@@ -12,11 +12,11 @@ export async function verifyRequest(rawBody, signature, key) {
   assertValidString(signature, "Invalid signature");
   assertValidString(key, "Invalid key");
 
-  const verify = createVerify("SHA256").update(rawBody);
-
   // verify signature
   try {
-    return verify.verify(key, signature, "base64");
+    return createVerify("SHA256")
+      .update(rawBody)
+      .verify(key, signature, "base64");
   } catch {
     return false;
   }
