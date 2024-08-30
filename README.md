@@ -22,6 +22,22 @@ const payloadIsVerified = await verifyRequestByKeyId(
 // true or false
 ```
 
+### Build a response
+
+```js
+import { createAckEvent, createDoneEvent, createTextEvent } from "@copilot-extensions/preview-sdk";
+
+export default handler(request, response) {
+  const ackEvent = createAckEvent();
+  const textEvent = createTextEvent("Hello, world!");
+  const doneEvent = createDoneEvent();
+
+  response.write(ackEvent.toString());
+  response.write(textEvent.toString());
+  response.end(doneEvent.toString());
+}
+```
+
 ## API
 
 ### `async verifyRequestByKeyId(rawBody, signature, keyId, options)`
