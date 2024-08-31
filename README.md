@@ -22,9 +22,27 @@ const payloadIsVerified = await verifyRequestByKeyId(
 // true or false
 ```
 
+### Build a response
+
+```js
+import { createAckEvent, createDoneEvent, createTextEvent } from "@copilot-extensions/preview-sdk";
+
+export default handler(request, response) {
+  const ackEvent = createAckEvent();
+  const textEvent = createTextEvent("Hello, world!");
+  const doneEvent = createDoneEvent();
+
+  response.write(ackEvent.toString());
+  response.write(textEvent.toString());
+  response.end(doneEvent.toString());
+}
+```
+
 ## API
 
-### `async verifyRequestByKeyId(rawBody, signature, keyId, options)`
+### Verification
+
+#### `async verifyRequestByKeyId(rawBody, signature, keyId, options)`
 
 Verify the request payload using the provided signature and key ID. The method will request the public key from GitHub's API for the given keyId and then verify the payload.
 
@@ -46,7 +64,7 @@ await verifyRequestByKeyId(request.body, signature, key, { token: "ghp_1234" });
 await verifyRequestByKeyId(request.body, signature, key, { request });
 ```
 
-### `async fetchVerificationKeys(options)`
+#### `async fetchVerificationKeys(options)`
 
 Fetches public keys for verifying copilot extension requests [from GitHub's API](https://api.github.com/meta/public_keys/copilot_api)
 and returns them as an array. The request can be made without authentication, with a token, or with a custom [octokit request](https://github.com/octokit/request.js) instance.
@@ -64,7 +82,7 @@ const [current] = await fetchVerificationKeys({ token: "ghp_1234" });
 const [current] = await fetchVerificationKeys({ request });)
 ```
 
-### `async verifyRequestPayload(rawBody, signature, keyId)`
+#### `async verifyRequestPayload(rawBody, signature, keyId)`
 
 Verify the request payload using the provided signature and key. Note that the raw body as received by GitHub must be passed, before any parsing.
 
@@ -77,6 +95,111 @@ const payloadIsVerified = await verifyRequestPayload(
   key
 );
 // true or false
+```
+
+### Response
+
+All `create*Event()` methods return an object with a `.toString()` method, which is called automatically when a string is expected. Unfortunately that's not the case for `response.write()`, you need to call `.toString()` explicitly.
+
+#### `createAckEvent()`
+
+Acknowledge the request so that the chat UI can tell the user that the agent started generating a response.
+The `ack` event should only be sent once.
+
+```js
+import { createAckEvent } from "@copilot-extensions/preview-sdk";
+
+response.write(createAckEvent().toString());
+```
+
+#### `createTextEvent(message)`
+
+Send a text message to the chat UI. Multiple messages can be sent. The `message` argument must be a string and may include markdown.
+
+```js
+import { createTextEvent } from "@copilot-extensions/preview-sdk";
+
+response.write(createTextEvent("Hello, world!").toString());
+response.write(createTextEvent("Hello, again!").toString());
+```
+
+#### `createConfirmationEvent({ id, title, message, metadata })`
+
+Ask the user to confirm an action. The `confirmation` event should only be sent once.
+
+The `meta` data object will be sent along the user's response.
+
+See additional documentation about Copilot confirmations at https://github.com/github/copilot-partners/blob/main/docs/confirmations.md.
+
+```js
+import { createConfirmationEvent } from "@copilot-extensions/preview-sdk";
+
+response.write(
+  createConfirmationEvent({
+    id: "123",
+    title: "Are you sure?",
+    message: "This will do something.",
+  }).toString()
+);
+```
+
+#### `createReferencesEvent(references)`
+
+Send a list of references to the chat UI. The `references` argument must be an array of objects with the following properties:
+
+- `id`
+- `type`
+
+The following properties are optional
+
+- `data`: object with any properties.
+- `is_implicit`: a boolean
+- `metadata`: an object with a required `display_name` and the optional properties: `display_icon` and `display_url`
+
+Multiple `references` events can be sent.
+
+See additional documentation about Copilot references at https://github.com/github/copilot-partners/blob/main/docs/copilot-references.md.
+
+```js
+import { createReferencesEvent } from "@copilot-extensions/preview-sdk";
+
+response.write(
+  createReferencesEvent([
+    {
+      id: "123",
+      type: "issue",
+      data: {
+        number: 123,
+      },
+      is_implicit: false,
+      metadata: {
+        display_name: "My issue",
+        display_icon: "issue-opened",
+        display_url: "https://github.com/monalisa/hello-world/issues/123",
+    },
+  ]).toString()
+);
+```
+
+#### `createErrorsEvent(errors)`
+
+An array of objects with the following properties:
+
+- `type`: must be one of: `"reference"`, `"function"`, `"agent"`
+- `code`
+- `message`
+- `identifier`
+
+See additional documentation about Copilot errors at https://github.com/github/copilot-partners/blob/main/docs/copilot-errors.md.
+
+#### `createDoneEvent()`
+
+The `done` event should only be sent once, at the end of the response. No further events can be sent after the `done` event.
+
+```js
+import { createDoneEvent } from "@copilot-extensions/preview-sdk";
+
+response.write(createDoneEvent().toString());
 ```
 
 ## Dreamcode
