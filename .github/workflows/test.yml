@@ -12,7 +12,8 @@ jobs:
     strategy:
       matrix:
         node_version:
-          - 20
+          # v20 does not support snapshot testing which we use for the alpha version
+          # - 20
           - 22
 
     steps:
