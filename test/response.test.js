@@ -1,5 +1,3 @@
-// @ts-check
-
 import { test, suite } from "node:test";
 
 import {
