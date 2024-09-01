@@ -14,7 +14,7 @@ import { verifyRequestByKeyId } from "@copilot-extensions/preview-sdk";
 const payloadIsVerified = await verifyRequestByKeyId(
   request.body,
   signature,
-  key,
+  keyId,
   {
     token: process.env.GITHUB_TOKEN,
   }
