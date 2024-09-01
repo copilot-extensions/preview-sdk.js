@@ -11,16 +11,18 @@ import {
   fetchVerificationKeys,
   verifyRequest,
   verifyRequestByKeyId,
+  parseRequestBody,
+  transformPayloadForOpenAICompatibility,
+  verifyAndParseRequest,
+  getUserMessage,
+  getUserConfirmation,
   type VerificationPublicKey,
+  CopilotRequestPayload,
 } from "./index.js";
 
-const rawBody = "";
-const signature = "";
-const keyId = "";
-const key = ""
 const token = "";
 
-export async function verifyRequestByKeyIdTest() {
+export async function verifyRequestByKeyIdTest(rawBody: string, signature: string, keyId: string) {
   const result = await verifyRequestByKeyId(rawBody, signature, keyId);
   expectType<boolean>(result);
 
@@ -43,7 +45,7 @@ export async function verifyRequestByKeyIdTest() {
   await verifyRequestByKeyId(rawBody, signature, keyId, { request });
 }
 
-export async function verifyRequestTest() {
+export async function verifyRequestTest(rawBody: string, signature: string, key: string) {
   const result = await verifyRequest(rawBody, signature, key);
   expectType<boolean>(result);
 
@@ -226,4 +228,42 @@ export function createDoneEventTest() {
 
   // @ts-expect-error - .event is required
   event.event
+}
+
+export function parseRequestBodyTest(body: string) {
+  const result = parseRequestBody(body)
+  expectType<CopilotRequestPayload>(result);
+}
+
+export function transformPayloadForOpenAICompatibilityTest(payload: CopilotRequestPayload) {
+  const result = transformPayloadForOpenAICompatibility(payload)
+  expectType<{
+    messages: {
+      content: string;
+      role: string;
+      name?: string
+    }[]
+  }
+  >(result);
+}
+
+export async function verifyAndParseRequestTest(rawBody: string, signature: string, keyId: string) {
+  const result = await verifyAndParseRequest(rawBody, signature, keyId)
+  expectType<{ isValidRequest: boolean, payload: CopilotRequestPayload }>(result);
+}
+
+export function getUserMessageTest(payload: CopilotRequestPayload) {
+  const result = getUserMessage(payload)
+  expectType<string>(result)
+}
+
+export function getUserConfirmationTest(payload: CopilotRequestPayload) {
+  const result = getUserConfirmation(payload)
+
+  if (result === undefined) {
+    expectType<undefined>(result)
+    return
+  }
+
+  expectType<{ accepted: boolean; id?: string; metadata: Record<string, unknown> }>(result)
 }

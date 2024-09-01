@@ -1,5 +1,7 @@
 import { request } from "@octokit/request";
 
+// verification types
+
 type RequestInterface = typeof request;
 type RequestOptions = {
   request?: RequestInterface;
@@ -33,6 +35,8 @@ interface VerifyRequestByKeyIdInterface {
     requestOptions?: RequestOptions,
   ): Promise<boolean>;
 }
+
+// response types
 
 export interface CreateAckEventInterface {
   (): ResponseEvent<"ack">
@@ -126,6 +130,122 @@ interface CopilotReference {
   };
 }
 
+// parse types
+
+export interface CopilotRequestPayload {
+  copilot_thread_id: string
+  messages: Message[]
+  stop: any
+  top_p: number
+  temperature: number
+  max_tokens: number
+  presence_penalty: number
+  frequency_penalty: number
+  copilot_skills: any[]
+  agent: string
+}
+
+export interface OpenAICompatibilityPayload {
+  messages: {
+    role: string
+    name?: string
+    content: string
+  }[]
+}
+
+export interface Message {
+  role: string
+  content: string
+  copilot_references: MessageCopilotReference[]
+  copilot_confirmations?: MessageCopilotConfirmation[]
+  name?: string
+}
+
+export interface MessageCopilotReference {
+  type: string
+  data: CopilotReferenceData
+  id: string
+  is_implicit: boolean
+  metadata: CopilotReferenceMetadata
+}
+
+export interface CopilotReferenceData {
+  type: string
+  id: number
+  name?: string
+  ownerLogin?: string
+  ownerType?: string
+  readmePath?: string
+  description?: string
+  commitOID?: string
+  ref?: string
+  refInfo?: CopilotReferenceDataRefInfo
+  visibility?: string
+  languages?: CopilotReferenceDataLanguage[]
+  login?: string
+  avatarURL?: string
+  url?: string
+}
+
+export interface CopilotReferenceDataRefInfo {
+  name: string
+  type: string
+}
+
+export interface CopilotReferenceDataLanguage {
+  name: string
+  percent: number
+}
+
+export interface CopilotReferenceMetadata {
+  display_name: string
+  display_icon: string
+  display_url: string
+}
+
+export interface MessageCopilotConfirmation {
+  state: "dismissed" | "accepted"
+  confirmation: {
+    id: string
+    [key: string]: unknown
+  }
+}
+
+export interface ParseRequestBodyInterface {
+  (body: string): CopilotRequestPayload
+}
+
+export interface TransformPayloadForOpenAICompatibilityInterface {
+  (payload: CopilotRequestPayload): OpenAICompatibilityPayload
+}
+
+
+export interface VerifyAndParseRequestInterface {
+  (
+    body: string,
+    signature: string,
+    keyID: string,
+    requestOptions?: RequestOptions,
+  ): Promise<{ isValidRequest: boolean; payload: CopilotRequestPayload }>;
+}
+
+
+export interface GetUserMessageInterface {
+  (payload: CopilotRequestPayload): string;
+}
+
+export type UserConfirmation = {
+  accepted: boolean;
+  id?: string;
+  metadata: Record<string, unknown>;
+}
+
+export interface GetUserConfirmationInterface {
+  (payload: CopilotRequestPayload): UserConfirmation | undefined;
+}
+
+// exported methods
+
 export declare const verifyRequest: VerifyRequestInterface;
 export declare const fetchVerificationKeys: FetchVerificationKeysInterface;
 export declare const verifyRequestByKeyId: VerifyRequestByKeyIdInterface;
@@ -136,3 +256,9 @@ export declare const createDoneEvent: CreateDoneEventInterface;
 export declare const createErrorsEvent: CreateErrorsEventInterface;
 export declare const createReferencesEvent: CreateReferencesEventInterface;
 export declare const createTextEvent: CreateTextEventInterface;
+
+export declare const parseRequestBody: ParseRequestBodyInterface;
+export declare const transformPayloadForOpenAICompatibility: TransformPayloadForOpenAICompatibilityInterface;
+export declare const verifyAndParseRequest: VerifyAndParseRequestInterface;
+export declare const getUserMessage: GetUserMessageInterface;
+export declare const getUserConfirmation: GetUserConfirmationInterface;

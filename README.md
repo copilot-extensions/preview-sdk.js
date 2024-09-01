@@ -42,7 +42,9 @@ export default handler(request, response) {
 
 ### Verification
 
-#### `async verifyRequestByKeyId(rawBody, signature, keyId, options)`
+<a name=verifyRequestByKeyId></a>
+
+#### `async verifyRequestByKeyId(rawBody, signature, keyId, requestOptions)`
 
 Verify the request payload using the provided signature and key ID. The method will request the public key from GitHub's API for the given keyId and then verify the payload.
 
@@ -200,6 +202,87 @@ The `done` event should only be sent once, at the end of the response. No furthe
 import { createDoneEvent } from "@copilot-extensions/preview-sdk";
 
 response.write(createDoneEvent().toString());
+```
+
+### Parsing
+
+<a name="parseRequestBody"></a>
+
+#### `parseRequestBody(body)`
+
+Parses the raw request body and returns an object with type support.
+
+⚠️ **It's well possible that the type is not 100% correct. Please send pull requests to `index.d.ts` to improve it**
+
+```js
+import { parseRequestBody } from "@copilot-extensions/preview-sdk";
+
+const payload = parseRequestBody(rawBody);
+// When your IDE supports types, typing "payload." should prompt the available keys and their types.
+```
+
+#### `transformPayloadForOpenAICompatibility()`
+
+For cases when you want to pipe a user request directly to OpenAI, use this method to remove Copilot-specific fields from the request payload.
+
+```js
+import { transformPayloadForOpenAICompatibility } from "@copilot-extensions/preview-sdk";
+import { OpenAI } from "openai";
+
+const openaiPayload = transformPayloadForOpenAICompatibility(payload);
+
+const openai = new OpenAI({ apiKey: OPENAI_API_KEY });
+const stream = openai.beta.chat.completions.stream({
+  ...openaiPayload,
+  model: "gpt-4-1106-preview",
+  stream: true,
+});
+```
+
+#### `verifyAndParseRequest()`
+
+Convenience method to verify and parse a request in one go. It calls [`verifyRequestByKeyId()`](#verifyRequestByKeyId) and [`parseRequestBody()`](#parseRequestBody) internally.
+
+```js
+import { verifyAndParseRequest } from "@copilot-extensions/preview-sdk";
+
+const { isValidRequest, payload } = await verifyAndParseRequest(
+  request,
+  signature,
+  key
+);
+
+if (!isValidRequest) {
+  throw new Error("Request could not be verified");
+}
+
+// `payload` has type support.
+```
+
+#### `getUserMessage()`
+
+Convencience method to get the user's message from the request payload.
+
+```js
+import { getUserMessage } from "@copilot-extensions/preview-sdk";
+
+const userMessage = getUserMessage(payload);
+```
+
+#### `getUserConfirmation()`
+
+Convencience method to get the user's confirmation from the request payload (in case the user's last response was a confirmation).
+
+```js
+import { getUserConfirmation } from "@copilot-extensions/preview-sdk";
+
+const userConfirmation = getUserConfirmation(payload);
+
+if (userConfirmation) {
+  console.log("Received a user confirmation", userConfirmation);
+} else {
+  // The user's last response was not a confirmation
+}
 ```
 
 ## Dreamcode
