@@ -99,3 +99,20 @@ exports[`response > createReferencesEvent() 1`] = `
 exports[`response > createReferencesEvent() 2`] = `
 "event: copilot_references\\ndata: [{\\"type\\":\\"test.story\\",\\"id\\":\\"test\\",\\"data\\":{\\"file\\":\\"test.js\\",\\"start\\":\\"1\\",\\"end\\":\\"42\\",\\"content\\":\\"function test() {...}\\"},\\"is_implicit\\":false,\\"metadata\\":{\\"display_name\\":\\"Lines 1-42 from test.js\\",\\"display_icon\\":\\"test-icon\\",\\"display_url\\":\\"http://github.com/monalisa/hello-world/blob/main/test.js#L1-L42\\"}}]\\n\\n"
 `;
+
+exports[`response > createTextEvent() 1`] = `
+{
+  "choices": [
+    {
+      "delta": {
+        "content": "test",
+        "role": "assistant"
+      }
+    }
+  ]
+}
+`;
+
+exports[`response > createTextEvent() 2`] = `
+"data: {\\"choices\\":[{\\"delta\\":{\\"content\\":\\"test\\",\\"role\\":\\"assistant\\"}}]}\\n\\n"
+`;

@@ -28,6 +28,13 @@ suite("response", () => {
     t.assert.snapshot(event.toString());
   });
 
+  test("createTextEvent()", (t) => {
+    const event = createTextEvent("test");
+    t.assert.equal(undefined, event.event);
+    t.assert.snapshot(event.data);
+    t.assert.snapshot(event.toString());
+  });
+
   test("createConfirmationEvent()", (t) => {
     const event = createConfirmationEvent({
       id: "123",

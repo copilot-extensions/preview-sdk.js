@@ -28,10 +28,23 @@ suite("request parsing", () => {
 
   test("transformPayloadForOpenAICompatibility()", (t) => {
     const payload = transformPayloadForOpenAICompatibility({
-      messages: [],
+      messages: [
+        {
+          role: "role",
+          name: "name",
+          content: "content",
+          someCopilotKey: "value",
+        },
+      ],
       someCopilotKey: "value",
     });
-    t.assert.deepStrictEqual(payload.messages, []);
+    t.assert.deepStrictEqual(payload.messages, [
+      {
+        role: "role",
+        name: "name",
+        content: "content",
+      },
+    ]);
   });
 
   test("verifyAndParseRequest()", async (t) => {
