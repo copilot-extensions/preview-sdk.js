@@ -74,9 +74,9 @@ For other environments, these methods are available:
 
 ```js
 // verify the payload and call handlers
-copilotExtension.verifyAndReceive({ payload, signature, keyId });
+await copilotExtension.verifyAndReceive({ payload, signature, keyId });
 // same, but skip verification
-copilotExtension.receive({ payload });
+await copilotExtension.receive({ payload });
 
 // and if you don't want to use the event-based API
 const { isValidRequest, payload } = await copilotExtension.verifyAndParse(
