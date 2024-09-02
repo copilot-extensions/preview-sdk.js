@@ -158,6 +158,14 @@ export interface Message {
   content: string
   copilot_references: MessageCopilotReference[]
   copilot_confirmations?: MessageCopilotConfirmation[]
+  tool_calls?: {
+    "function": {
+      "arguments": string,
+      "name": string
+    },
+    "id": string,
+    "type": "function"
+  }[]
   name?: string
 }
 
@@ -251,9 +259,21 @@ export type ModelName =
   | "gpt-4"
   | "gpt-3.5-turbo"
 
+export interface PromptFunction {
+  type: "function"
+  function: {
+    name: string;
+    description?: string;
+    /** @see https://platform.openai.com/docs/guides/structured-outputs/supported-schemas */
+    parameters?: Record<string, unknown>;
+    strict?: boolean | null;
+  }
+}
+
 export type PromptOptions = {
   model: ModelName
   token: string
+  tools?: PromptFunction[]
   request?: {
     fetch?: Function
   }
