@@ -321,7 +321,7 @@ const { message } = await prompt("What is the capital of France?", {
 console.log(message.content);
 ```
 
-⚠️ Not all of the arguments below are implemented yet.
+⚠️ Not all of the arguments below are implemented yet. See [#5](https://github.com/copilot-extensions/preview-sdk.js/issues/5) sub issues for progress.
 
 ```js
 await prompt({
