@@ -38,6 +38,23 @@ export default handler(request, response) {
 }
 ```
 
+### Send a custom propmt
+
+```js
+import { prompt } from "@copilot-extensions/preview-sdk";
+
+try {
+  const { message } = await prompt("What is the capital of France?", {
+    model: "gpt-4",
+    token: process.env.TOKEN,
+  });
+
+  console.log(message.content);
+} catch (error) {
+  console.error(error);
+}
+```
+
 ## API
 
 ### Verification
@@ -283,6 +300,86 @@ if (userConfirmation) {
 } else {
   // The user's last response was not a confirmation
 }
+```
+
+## Prompt (Custom Chat completion calls)
+
+#### `prompt(message, options)`
+
+Send a prompt to the chat UI and receive a response from the user. The `message` argument must be a string and may include markdown.
+
+The `options` argument is optional. It can contain a `token` to authenticate the request to GitHub's API, or a custom `request.fetch` instance to use for the request.
+
+```js
+import { prompt } from "@copilot-extensions/preview-sdk";
+
+const { message } = await prompt("What is the capital of France?", {
+  model: "gpt-4",
+  token: process.env.TOKEN,
+});
+
+console.log(message.content);
+```
+
+⚠️ Not all of the arguments below are implemented yet.
+
+```js
+const { data } = await prompt({
+  model: "gpt-4o",
+  token: process.env.TOKEN,
+  system: "You are a helpful assistant.",
+  messages: [
+    { role: "user", content: "What is the capital of France?" },
+    { role: "assistant", content: "The capital of France is Paris." },
+    {
+      role: "user",
+      content: [
+        [
+          { type: "text", text: "What about this country?" },
+          {
+            type: "image_url",
+            image_url: urlToImageOfFlagOfSpain,
+          },
+        ],
+      ],
+    },
+  ],
+  // GitHub recommends using your GitHub username, the name of your application
+  // https://docs.github.com/en/rest/using-the-rest-api/getting-started-with-the-rest-api?apiVersion=2022-11-28#user-agent
+  userAgent: "gr2m/my-app v1.2.3",
+  // set an alternative chat completions endpoint
+  endpoint: "https://models.inference.ai.azure.com/chat/completions",
+  // compare https://platform.openai.com/docs/guides/function-calling/configuring-function-calling-behavior-using-the-tool_choice-parameter
+  toolChoice: "auto",
+  tools: [
+    {
+      type: "function",
+      function: {
+        name: "get_weather",
+        strict: true,
+        parameters: {
+          type: "object",
+          properties: {
+            location: { type: "string" },
+            unit: { type: "string", enum: ["c", "f"] },
+          },
+          required: ["location", "unit"],
+          additionalProperties: False,
+        },
+      },
+    },
+  ],
+  // configuration related to the request transport layer
+  request: {
+    // for mocking, proxying, client certificates, etc.
+    fetch: myCustomFetch,
+    // hook into request life cycle for complex authentication strategies, retries, throttling, etc
+    // compare options.request.hook from https://github.com/octokit/request.js
+    hook: myCustomHook,
+    // Use an `AbortController` instance to cancel a request
+    signal: myAbortController.signal,
+  },
+});
 ```
 
 ## Dreamcode
