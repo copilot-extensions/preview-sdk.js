@@ -307,12 +307,33 @@ export async function promptWithToolsTest() {
         function: {
           name: "",
           description: "",
-          parameters: {
-
-          },
+          parameters: {},
           strict: true,
         }
       }
     ]
   })
+}
+
+export async function promptWithMessageAndMessages() {
+  await prompt("What about Spain?", {
+    model: "gpt-4",
+    token: 'secret',
+    messages: [
+      { role: "user", content: "What is the capital of France?" },
+      { role: "assistant", content: "The capital of France is Paris." },
+    ],
+  });
+}
+
+export async function promptWithoutMessageButMessages() {
+  await prompt({
+    model: "gpt-4",
+    token: 'secret',
+    messages: [
+      { role: "user", content: "What is the capital of France?" },
+      { role: "assistant", content: "The capital of France is Paris." },
+      { role: "user", content: "What about Spain?" },
+    ],
+  });
 }
