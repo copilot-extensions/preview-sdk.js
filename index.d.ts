@@ -244,6 +244,30 @@ export interface GetUserConfirmationInterface {
   (payload: CopilotRequestPayload): UserConfirmation | undefined;
 }
 
+// prompt
+
+/** model names supported by Copilot API */
+export type ModelName =
+  | "gpt-4"
+  | "gpt-3.5-turbo"
+
+export type PromptOptions = {
+  model: ModelName
+  token: string
+  request?: {
+    fetch?: Function
+  }
+}
+
+export type PromptResult = {
+  requestId: string
+  message: Message
+}
+
+interface PromptInterface {
+  (userPrompt: string, options: PromptOptions): Promise<PromptResult>;
+}
+
 // exported methods
 
 export declare const verifyRequest: VerifyRequestInterface;
@@ -262,3 +286,5 @@ export declare const transformPayloadForOpenAICompatibility: TransformPayloadFor
 export declare const verifyAndParseRequest: VerifyAndParseRequestInterface;
 export declare const getUserMessage: GetUserMessageInterface;
 export declare const getUserConfirmation: GetUserConfirmationInterface;
+
+export declare const prompt: PromptInterface;
