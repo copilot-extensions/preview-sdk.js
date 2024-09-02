@@ -324,7 +324,7 @@ console.log(message.content);
 ⚠️ Not all of the arguments below are implemented yet.
 
 ```js
-const { data } = await prompt({
+await prompt({
   model: "gpt-4o",
   token: process.env.TOKEN,
   system: "You are a helpful assistant.",
