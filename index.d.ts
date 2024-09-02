@@ -75,9 +75,7 @@ type ResponseEvent<T extends ResponseEventType = "text"> =
 
 type CopilotAckResponseEventData = {
   choices: [{
-    delta: {
-      content: "", role: "assistant"
-    }
+    delta: InteropMessage<"assistant">
   }]
 }
 
@@ -92,9 +90,7 @@ type CopilotDoneResponseEventData = {
 
 type CopilotTextResponseEventData = {
   choices: [{
-    delta: {
-      content: string, role: "assistant"
-    }
+    delta: InteropMessage<"assistant">
   }]
 }
 type CopilotConfirmationResponseEventData = {
@@ -134,7 +130,7 @@ interface CopilotReference {
 
 export interface CopilotRequestPayload {
   copilot_thread_id: string
-  messages: Message[]
+  messages: CopilotMessage[]
   stop: any
   top_p: number
   temperature: number
@@ -146,14 +142,10 @@ export interface CopilotRequestPayload {
 }
 
 export interface OpenAICompatibilityPayload {
-  messages: {
-    role: string
-    name?: string
-    content: string
-  }[]
+  messages: InteropMessage[]
 }
 
-export interface Message {
+export interface CopilotMessage {
   role: string
   content: string
   copilot_references: MessageCopilotReference[]
@@ -167,6 +159,13 @@ export interface Message {
     "type": "function"
   }[]
   name?: string
+}
+
+export interface InteropMessage<TRole extends string = string> {
+  role: TRole
+  content: string
+  name?: string
+  [key: string]: unknown
 }
 
 export interface MessageCopilotReference {
@@ -274,6 +273,7 @@ export type PromptOptions = {
   model: ModelName
   token: string
   tools?: PromptFunction[]
+  messages?: InteropMessage[]
   request?: {
     fetch?: Function
   }
@@ -281,11 +281,15 @@ export type PromptOptions = {
 
 export type PromptResult = {
   requestId: string
-  message: Message
+  message: CopilotMessage
 }
+
+// https://stackoverflow.com/a/69328045
+type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }
 
 interface PromptInterface {
   (userPrompt: string, options: PromptOptions): Promise<PromptResult>;
+  (options: WithRequired<PromptOptions, "messages">): Promise<PromptResult>;
 }
 
 // exported methods
