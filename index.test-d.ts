@@ -18,6 +18,7 @@ import {
   getUserConfirmation,
   type VerificationPublicKey,
   CopilotRequestPayload,
+  prompt,
 } from "./index.js";
 
 const token = "";
@@ -266,4 +267,32 @@ export function getUserConfirmationTest(payload: CopilotRequestPayload) {
   }
 
   expectType<{ accepted: boolean; id?: string; metadata: Record<string, unknown> }>(result)
+}
+
+export async function promptTest() {
+  const result = await prompt("What is the capital of France?", {
+    model: "gpt-4",
+    token: "secret",
+  })
+
+  expectType<string>(result.requestId)
+  expectType<string>(result.message.content)
+
+  // with custom fetch
+  await prompt("What is the capital of France?", {
+    model: "gpt-4",
+    token: "secret",
+    request: {
+      fetch: () => { }
+    }
+  })
+
+  // @ts-expect-error - 2nd argument is required
+  prompt("What is the capital of France?")
+
+  // @ts-expect-error - model argument is required
+  prompt("What is the capital of France?", { token: "" })
+
+  // @ts-expect-error - token argument is required
+  prompt("What is the capital of France?", { model: "" })
 }
