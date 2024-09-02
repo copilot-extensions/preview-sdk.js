@@ -296,3 +296,23 @@ export async function promptTest() {
   // @ts-expect-error - token argument is required
   prompt("What is the capital of France?", { model: "" })
 }
+
+export async function promptWithToolsTest() {
+  await prompt("What is the capital of France?", {
+    model: "gpt-4",
+    token: "secret",
+    tools: [
+      {
+        type: "function",
+        function: {
+          name: "",
+          description: "",
+          parameters: {
+
+          },
+          strict: true,
+        }
+      }
+    ]
+  })
+}
