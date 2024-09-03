@@ -20,6 +20,8 @@ import {
   type InteropMessage,
   CopilotRequestPayload,
   prompt,
+  PromptResult,
+  getFunctionCalls,
 } from "./index.js";
 
 const token = "";
@@ -335,4 +337,15 @@ export async function promptWithoutMessageButMessages() {
       { role: "user", content: "What about Spain?" },
     ],
   });
+}
+
+export async function getFunctionCallsTest(promptResponsePayload: PromptResult) {
+  const result = getFunctionCalls(promptResponsePayload)
+
+  expectType<{
+    id: string, function: {
+      name: string,
+      arguments: string,
+    }
+  }[]>(result)
 }

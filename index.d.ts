@@ -306,6 +306,16 @@ interface PromptInterface {
   (options: WithRequired<PromptOptions, "messages">): Promise<PromptResult>;
 }
 
+interface GetFunctionCallsInterface {
+  (payload: PromptResult): {
+    id: string;
+    function: {
+      name: string,
+      arguments: string,
+    }
+  }[]
+}
+
 // exported methods
 
 export declare const verifyRequest: VerifyRequestInterface;
@@ -326,3 +336,4 @@ export declare const getUserMessage: GetUserMessageInterface;
 export declare const getUserConfirmation: GetUserConfirmationInterface;
 
 export declare const prompt: PromptInterface;
+export declare const getFunctionCalls: GetFunctionCallsInterface;
