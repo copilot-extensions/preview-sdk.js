@@ -254,10 +254,23 @@ export interface GetUserConfirmationInterface {
 
 // prompt
 
-/** model names supported by Copilot API */
+/** 
+ * model names supported by Copilot API
+ * 
+ * Based on https://api.githubcopilot.com/models from 2024-09-02
+ */
 export type ModelName =
-  | "gpt-4"
   | "gpt-3.5-turbo"
+  | "gpt-3.5-turbo-0613"
+  | "gpt-4"
+  | "gpt-4-0613"
+  | "gpt-4-o-preview"
+  | "gpt-4o"
+  | "gpt-4o-2024-05-13"
+  | "text-embedding-3-small"
+  | "text-embedding-3-small-inference"
+  | "text-embedding-ada-002"
+  | "text-embedding-ada-002-index"
 
 export interface PromptFunction {
   type: "function"
