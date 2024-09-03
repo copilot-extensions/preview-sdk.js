@@ -321,7 +321,34 @@ const { message } = await prompt("What is the capital of France?", {
 console.log(message.content);
 ```
 
-⚠️ Not all of the arguments below are implemented yet.
+In order to pass a history of messages, pass them as `options.messages`:
+
+```js
+const { message } = await prompt("What about Spain?", {
+  model: "gpt-4",
+  token: process.env.TOKEN,
+  messages: [
+    { role: "user", content: "What is the capital of France?" },
+    { role: "assistant", content: "The capital of France is Paris." },
+  ],
+});
+```
+
+Alternatively, skip the `message` argument and pass all messages as `options.messages`:
+
+```js
+const { message } = await prompt({
+  model: "gpt-4",
+  token: process.env.TOKEN,
+  messages: [
+    { role: "user", content: "What is the capital of France?" },
+    { role: "assistant", content: "The capital of France is Paris." },
+    { role: "user", content: "What about Spain?" },
+  ],
+});
+```
+
+⚠️ Not all of the arguments below are implemented yet. See [#5](https://github.com/copilot-extensions/preview-sdk.js/issues/5) sub issues for progress.
 
 ```js
 await prompt({

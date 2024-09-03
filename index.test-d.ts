@@ -17,6 +17,7 @@ import {
   getUserMessage,
   getUserConfirmation,
   type VerificationPublicKey,
+  type InteropMessage,
   CopilotRequestPayload,
   prompt,
 } from "./index.js";
@@ -79,11 +80,10 @@ export function createAckEventTest() {
   expectType<() => string>(event.toString);
   expectType<string>(event.toString());
 
+
   expectType<{
     choices: [{
-      delta: {
-        content: "", role: "assistant"
-      }
+      delta: InteropMessage<"assistant">
     }]
   }>(event.data);
 
@@ -98,9 +98,7 @@ export function createTextEventTest() {
 
   expectType<{
     choices: [{
-      delta: {
-        content: string, role: "assistant"
-      }
+      delta: InteropMessage<"assistant">
     }]
   }>(event.data);
 
@@ -243,6 +241,7 @@ export function transformPayloadForOpenAICompatibilityTest(payload: CopilotReque
       content: string;
       role: string;
       name?: string
+      [key: string]: unknown
     }[]
   }
   >(result);
@@ -307,12 +306,33 @@ export async function promptWithToolsTest() {
         function: {
           name: "",
           description: "",
-          parameters: {
-
-          },
+          parameters: {},
           strict: true,
         }
       }
     ]
   })
+}
+
+export async function promptWithMessageAndMessages() {
+  await prompt("What about Spain?", {
+    model: "gpt-4",
+    token: 'secret',
+    messages: [
+      { role: "user", content: "What is the capital of France?" },
+      { role: "assistant", content: "The capital of France is Paris." },
+    ],
+  });
+}
+
+export async function promptWithoutMessageButMessages() {
+  await prompt({
+    model: "gpt-4",
+    token: 'secret',
+    messages: [
+      { role: "user", content: "What is the capital of France?" },
+      { role: "assistant", content: "The capital of France is Paris." },
+      { role: "user", content: "What about Spain?" },
+    ],
+  });
 }

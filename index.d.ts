@@ -75,9 +75,7 @@ type ResponseEvent<T extends ResponseEventType = "text"> =
 
 type CopilotAckResponseEventData = {
   choices: [{
-    delta: {
-      content: "", role: "assistant"
-    }
+    delta: InteropMessage<"assistant">
   }]
 }
 
@@ -92,9 +90,7 @@ type CopilotDoneResponseEventData = {
 
 type CopilotTextResponseEventData = {
   choices: [{
-    delta: {
-      content: string, role: "assistant"
-    }
+    delta: InteropMessage<"assistant">
   }]
 }
 type CopilotConfirmationResponseEventData = {
@@ -134,7 +130,7 @@ interface CopilotReference {
 
 export interface CopilotRequestPayload {
   copilot_thread_id: string
-  messages: Message[]
+  messages: CopilotMessage[]
   stop: any
   top_p: number
   temperature: number
@@ -146,14 +142,10 @@ export interface CopilotRequestPayload {
 }
 
 export interface OpenAICompatibilityPayload {
-  messages: {
-    role: string
-    name?: string
-    content: string
-  }[]
+  messages: InteropMessage[]
 }
 
-export interface Message {
+export interface CopilotMessage {
   role: string
   content: string
   copilot_references: MessageCopilotReference[]
@@ -167,6 +159,14 @@ export interface Message {
     "type": "function"
   }[]
   name?: string
+  [key: string]: unknown
+}
+
+export interface InteropMessage<TRole extends string = string> {
+  role: TRole
+  content: string
+  name?: string
+  [key: string]: unknown
 }
 
 export interface MessageCopilotReference {
@@ -254,10 +254,23 @@ export interface GetUserConfirmationInterface {
 
 // prompt
 
-/** model names supported by Copilot API */
+/** 
+ * model names supported by Copilot API
+ * 
+ * Based on https://api.githubcopilot.com/models from 2024-09-02
+ */
 export type ModelName =
-  | "gpt-4"
   | "gpt-3.5-turbo"
+  | "gpt-3.5-turbo-0613"
+  | "gpt-4"
+  | "gpt-4-0613"
+  | "gpt-4-o-preview"
+  | "gpt-4o"
+  | "gpt-4o-2024-05-13"
+  | "text-embedding-3-small"
+  | "text-embedding-3-small-inference"
+  | "text-embedding-ada-002"
+  | "text-embedding-ada-002-index"
 
 export interface PromptFunction {
   type: "function"
@@ -274,6 +287,7 @@ export type PromptOptions = {
   model: ModelName
   token: string
   tools?: PromptFunction[]
+  messages?: InteropMessage[]
   request?: {
     fetch?: Function
   }
@@ -281,11 +295,15 @@ export type PromptOptions = {
 
 export type PromptResult = {
   requestId: string
-  message: Message
+  message: CopilotMessage
 }
+
+// https://stackoverflow.com/a/69328045
+type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }
 
 interface PromptInterface {
   (userPrompt: string, options: PromptOptions): Promise<PromptResult>;
+  (options: WithRequired<PromptOptions, "messages">): Promise<PromptResult>;
 }
 
 // exported methods
