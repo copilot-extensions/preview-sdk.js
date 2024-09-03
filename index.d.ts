@@ -159,6 +159,7 @@ export interface CopilotMessage {
     "type": "function"
   }[]
   name?: string
+  [key: string]: unknown
 }
 
 export interface InteropMessage<TRole extends string = string> {
