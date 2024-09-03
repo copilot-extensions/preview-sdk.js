@@ -93,7 +93,9 @@ Regarding the context passed to event handlers
 - `message` / `confirmation` / etc are objects as received by the user
 - `octokit` is a pre-authenticated octokit instance
 - `prompt` is based on my work at https://github.com/github/gr2m-projects/blob/167/github-models/167-github-models/README.md. A simple API to interact with GitHub models. I assume we will default the prompt URL to `https://api.githubcopilot.com/chat/completions` and the model to `gpt-4o` (or whatever our CAPI name for that is?)
-- The `prompt` API will automatically apply interop transformations if the request is sent to an endpoint other than Copilot's chat complitions endpoint.
+- The `prompt` API
+  - will automatically apply interop transformations if the request is sent to an endpoint other than Copilot's chat complitions endpoint.
+  - will automatically pass through past messages unless explicitly overridden
 - `respond` is an API to send different types of responses to the user
 - `log` is the logger as we use it in Octokit. See https://github.com/octokit/core.js?tab=readme-ov-file#logging
 
