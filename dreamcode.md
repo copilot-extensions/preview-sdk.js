@@ -10,8 +10,12 @@ Please, any questions/feedback/feelings are welcome. This is a safe space. Pleas
 - Automated Payload verification
 - High-level APIs for different types of responses (text, confirmation, references, etc.)
 - High-level API for interacting with models
+- High-level API for function calls
+- High-level API for requesting user confirmation before a function is called
 
-## API
+## Examples
+
+### Tell a joke
 
 ```js
 import { createServer } from "http";
@@ -65,6 +69,118 @@ copilotExtension.on(
     await respond.text("Hmm, something went wrong. Please try again later.");
   }
 );
+```
+
+### Book a flight
+
+I'm using [@daveebbelaar](https://github.com/daveebbelaar)'s example of a flight booking agent that they demonstrate at https://www.youtube.com/watch?v=aqdWSYWC_LI
+
+```js
+import { createServer } from "http";
+
+import {
+  CopilotExtension,
+  createNodeMiddleware,
+} from "@octokit/copilot-extension";
+
+const copilotExtension = new CopilotExtension({
+  userAgent: "book-a-flight",
+
+  // TBD: are we supporting a default model? Globally, or for an enterprise/organization/user?
+  model: {
+    // either "gpt-3.5-turbo" or "gpt-4". Maybe "default" if we support that server-side or want to support that in the SDK?
+    name: "gpt-4",
+    // optional, setting to default for demo purposes
+    endpoint: "https://api.githubcopilot.com/chat/completions",
+    // when enabled, messages are passed through to Copilot's chat completions API
+    // defaults to false. Set to true when `functions` is set
+    passThrough: true,
+  },
+
+  functions: [
+    {
+      name: "lookup_flight",
+      description: "Look up a flight based on time, origin, and destination",
+      parameters: {
+        time: {
+          type: "string",
+          description:
+            "The time when the flight should depart as ISO 8601 date time string",
+        },
+        origin: {
+          type: "string",
+          description: "The airport short code for the origin of the flight",
+        },
+        destination: {
+          type: "string",
+          description:
+            "The airport short code for the destination of the flight",
+        },
+      },
+      async run({ time, origin, destination }) {
+        const result = await myFlightLookupFunction(time, origin, destination);
+        return {
+          departureTime: result.departureTime,
+          timezoneDifference: result.timezoneDifference,
+          arrivalTime: result.arrivalTime,
+          travelTime: result.travelTime,
+          flightNumber: result.flightNumber,
+          airline: result.airline,
+          originCity: result.originCity,
+          originCode: result.originCode,
+          destinationCity: result.destinationCity,
+          destinationCode: result.destinationCode,
+          travelTime: result.travelTime,
+        };
+      },
+    },
+    {
+      name: "book_flight",
+      description: "Book a flight based flight number and day",
+      parameters: {
+        flightNumber: {
+          type: "string",
+          description: "The flight number",
+        },
+        date: {
+          type: "string",
+          description: "The date of the flight as an ISO 8601 date string",
+        },
+      },
+      // setting a confirmation key will prompt the user to confirm an action before it is taken
+      confirmation: {
+        title: "Confirm you want me to book the following flight",
+        message(parameters) {
+          return `Yes, please book flight ${parameters.flightNumber} on ${parameters.date}`;
+        },
+      },
+      async run({ flightNumber, date }) {
+        const result = await myFlightBookingFunction(flightNumber, date);
+        return {
+          flightNumber,
+          departureTime: result.date,
+          confirmationNumber: result.confirmationNumber,
+          seat: result.seat,
+        };
+      },
+    },
+  ],
+});
+
+// you can still hook into messages and function calls before they are passed through
+// to the chat completions API.
+copilotExtension.on("message", async ({ log }) => {
+  log.info("Received a message:", message.content);
+
+  // if you don't want a request to be forwarded to the chat completions API, call `await respond.done()` explicitly
+});
+copilotExtension.on("function_call", async ({ log, name, parameters }) => {
+  log.info(
+    "Received a function call for %s with parameters %o",
+    name,
+    parameters
+  );
+});
 
 createServer(createNodeMiddleware(copilotExtension)).listen(3000);
 copilotExtension.log.info("Listening on http://localhost:3000");
