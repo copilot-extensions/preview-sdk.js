@@ -409,6 +409,23 @@ await prompt({
 });
 ```
 
+### `getFunctionCalls()`
+
+Convenience metthod if a result from a `prompt()` call includes function calls.
+
+```js
+import { prompt, getFunctionCalls } from "@copilot-extensions/preview-sdk";
+
+const result = await prompt(options);
+const [functionCall] = getFunctionCalls(result);
+
+if (functionCall) {
+  console.log("Received a function call", functionCall);
+} else {
+  console.log("No function call received");
+}
+```
+
 ## Dreamcode
 
 While implementing the lower-level functionality, we also dream big: what would our dream SDK for Coplitot extensions look like? Please have a look and share your thoughts and ideas:
