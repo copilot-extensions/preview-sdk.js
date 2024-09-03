@@ -2,7 +2,7 @@ import { test, suite } from "node:test";
 
 import { MockAgent } from "undici";
 
-import { prompt } from "../index.js";
+import { prompt, getFunctionCalls } from "../index.js";
 
 suite("prompt", () => {
   test("smoke", (t) => {
@@ -265,6 +265,104 @@ suite("prompt", () => {
       message: {
         content: "<response text>",
       },
+    });
+  });
+
+  test("Handles error", async (t) => {
+    const mockAgent = new MockAgent();
+    function fetchMock(url, opts) {
+      opts ||= {};
+      opts.dispatcher = mockAgent;
+      return fetch(url, opts);
+    }
+
+    mockAgent.disableNetConnect();
+    const mockPool = mockAgent.get("https://api.githubcopilot.com");
+    mockPool
+      .intercept({
+        method: "post",
+        path: `/chat/completions`,
+        body: JSON.stringify({
+          messages: [
+            {
+              role: "system",
+              content: "You are a helpful assistant.",
+            },
+            {
+              role: "user",
+              content: "What is the capital of France?",
+            },
+          ],
+          model: "gpt-4",
+        }),
+      })
+      .reply(400, "Bad Request", {
+        headers: {
+          "content-type": "text/plain",
+          "x-request-id": "<request-id>",
+        },
+      });
+
+    const result = await prompt("What is the capital of France?", {
+      token: "secret",
+      model: "gpt-4",
+      request: { fetch: fetchMock },
+    });
+
+    t.assert.deepEqual(result, {
+      message: {
+        content:
+          "Sorry, an error occured with the chat completions API. (Status: 400, request ID: <request-id>)",
+        role: "Sssistant",
+      },
+      requestId: "<request-id>",
+    });
+  });
+
+  suite("getFunctionCalls()", () => {
+    test("includes function calls", async (t) => {
+      const tool_calls = [
+        {
+          function: {
+            arguments: '{\n  "order_id": "123"\n}',
+            name: "get_delivery_date",
+          },
+          id: "call_Eko8Jz0mgchNOqiJJrrMr8YW",
+          type: "function",
+        },
+      ];
+      const result = getFunctionCalls({
+        requestId: "<request-id>",
+        message: {
+          role: "assistant",
+          tool_calls,
+        },
+      });
+
+      t.assert.deepEqual(
+        result,
+        tool_calls.map((call) => {
+          return {
+            id: call.id,
+            function: {
+              name: call.function.name,
+              arguments: call.function.arguments,
+            },
+          };
+        })
+      );
+    });
+
+    test("does not include function calls", async (t) => {
+      const result = getFunctionCalls({
+        requestId: "<request-id>",
+        message: {
+          content: "Hello! How can I assist you today?",
+          role: "assistant",
+        },
+      });
+
+      t.assert.deepEqual(result, []);
     });
   });
 });
