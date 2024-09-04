@@ -82,9 +82,9 @@ const copilotAgent = new CopilotAgent({
 
   // TBD: are we supporting a default model? Globally, or for an enterprise/organization/user?
   model: {
-    // either "gpt-3.5-turbo" or "gpt-4". Maybe "default" if we support that server-side or want to support that in the SDK?
+    // Defaults to "gpt-4". Get available models from https://api.githubcopilot.com/models
     name: "gpt-4",
-    // optional, setting to default for demo purposes
+    // Defaults to "https://api.githubcopilot.com/chat/completions"
     endpoint: "https://api.githubcopilot.com/chat/completions",
     // when enabled, messages are passed through to Copilot's chat completions API
     // defaults to false. Set to true when `functions` is set
