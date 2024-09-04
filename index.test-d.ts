@@ -26,7 +26,11 @@ import {
 
 const token = "";
 
-export async function verifyRequestByKeyIdTest(rawBody: string, signature: string, keyId: string) {
+export async function verifyRequestByKeyIdTest(
+  rawBody: string,
+  signature: string,
+  keyId: string,
+) {
   const result = await verifyRequestByKeyId(rawBody, signature, keyId);
   expectType<boolean>(result);
 
@@ -49,7 +53,11 @@ export async function verifyRequestByKeyIdTest(rawBody: string, signature: strin
   await verifyRequestByKeyId(rawBody, signature, keyId, { request });
 }
 
-export async function verifyRequestTest(rawBody: string, signature: string, key: string) {
+export async function verifyRequestTest(
+  rawBody: string,
+  signature: string,
+  key: string,
+) {
   const result = await verifyRequest(rawBody, signature, key);
   expectType<boolean>(result);
 
@@ -82,15 +90,16 @@ export function createAckEventTest() {
   expectType<() => string>(event.toString);
   expectType<string>(event.toString());
 
-
   expectType<{
-    choices: [{
-      delta: InteropMessage<"assistant">
-    }]
+    choices: [
+      {
+        delta: InteropMessage<"assistant">;
+      },
+    ];
   }>(event.data);
 
   // @ts-expect-error - .event is required
-  event.event
+  event.event;
 }
 
 export function createTextEventTest() {
@@ -99,20 +108,22 @@ export function createTextEventTest() {
   expectType<string>(event.toString());
 
   expectType<{
-    choices: [{
-      delta: InteropMessage<"assistant">
-    }]
+    choices: [
+      {
+        delta: InteropMessage<"assistant">;
+      },
+    ];
   }>(event.data);
 
   // @ts-expect-error - .event is required
-  event.event
+  event.event;
 }
 
 export function createConfirmationEventTest() {
   const event = createConfirmationEvent({
     id: "test",
     title: "test",
-    message: "test"
+    message: "test",
   });
 
   // optional metadata
@@ -122,14 +133,14 @@ export function createConfirmationEventTest() {
     message: "test",
     metadata: {
       someOtherId: "test",
-    }
-  })
+    },
+  });
 
   expectType<() => string>(event.toString);
   expectType<string>(event.toString());
 
   expectType<{
-    type: 'action';
+    type: "action";
     title: string;
     message: string;
     confirmation?: {
@@ -164,49 +175,57 @@ export function createReferencesEventTest() {
   expectType<() => string>(event.toString);
   expectType<string>(event.toString());
 
-  expectType<{
-    type: string;
-    id: string;
-    data?: {
-      [key: string]: unknown;
-    };
-    is_implicit?: boolean;
-    metadata?: {
-      display_name: string;
-      display_icon?: string;
-      display_url?: string;
-    };
-  }[]>(event.data);
+  expectType<
+    {
+      type: string;
+      id: string;
+      data?: {
+        [key: string]: unknown;
+      };
+      is_implicit?: boolean;
+      metadata?: {
+        display_name: string;
+        display_icon?: string;
+        display_url?: string;
+      };
+    }[]
+  >(event.data);
 
   expectType<"copilot_references">(event.event);
 }
 
 export function createErrorsEventTest() {
-  const event = createErrorsEvent([{
-    type: "reference",
-    code: "1",
-    message: "test reference error",
-    identifier: "reference-identifier",
-  }, {
-    type: "function",
-    code: "1",
-    message: "test function error",
-    identifier: "function-identifier",
-  }, {
-    type: "agent",
-    code: "1",
-    message: "test agent error",
-    identifier: "agent-identifier",
-  }]);
+  const event = createErrorsEvent([
+    {
+      type: "reference",
+      code: "1",
+      message: "test reference error",
+      identifier: "reference-identifier",
+    },
+    {
+      type: "function",
+      code: "1",
+      message: "test function error",
+      identifier: "function-identifier",
+    },
+    {
+      type: "agent",
+      code: "1",
+      message: "test agent error",
+      identifier: "agent-identifier",
+    },
+  ]);
   expectType<() => string>(event.toString);
   expectType<string>(event.toString());
 
-  expectType<{
-    type: "reference" | "function" | "agent";
-    code: string;
-    message: string;
-    identifier: string;
-  }[]>(event.data);
+  expectType<
+    {
+      type: "reference" | "function" | "agent";
+      code: string;
+      message: string;
+      identifier: string;
+    }[]
+  >(event.data);
 
   expectType<"copilot_errors">(event.event);
 }
@@ -217,82 +236,93 @@ export function createDoneEventTest() {
   expectType<string>(event.toString());
 
   expectType<{
-    "choices": [
+    choices: [
       {
-        "finish_reason": "stop",
-        "delta": {
-          "content": null
-        }
-      }
-    ]
+        finish_reason: "stop";
+        delta: {
+          content: null;
+        };
+      },
+    ];
   }>(event.data);
 
   // @ts-expect-error - .event is required
-  event.event
+  event.event;
 }
 
 export function parseRequestBodyTest(body: string) {
-  const result = parseRequestBody(body)
+  const result = parseRequestBody(body);
   expectType<CopilotRequestPayload>(result);
 }
 
-export function transformPayloadForOpenAICompatibilityTest(payload: CopilotRequestPayload) {
-  const result = transformPayloadForOpenAICompatibility(payload)
+export function transformPayloadForOpenAICompatibilityTest(
+  payload: CopilotRequestPayload,
+) {
+  const result = transformPayloadForOpenAICompatibility(payload);
   expectType<{
     messages: {
       content: string;
       role: string;
-      name?: string
-      [key: string]: unknown
-    }[]
-  }
-  >(result);
+      name?: string;
+      [key: string]: unknown;
+    }[];
+  }>(result);
 }
 
-export async function verifyAndParseRequestTest(rawBody: string, signature: string, keyId: string) {
-  const result = await verifyAndParseRequest(rawBody, signature, keyId)
-  expectType<{ isValidRequest: boolean, payload: CopilotRequestPayload }>(result);
+export async function verifyAndParseRequestTest(
+  rawBody: string,
+  signature: string,
+  keyId: string,
+) {
+  const result = await verifyAndParseRequest(rawBody, signature, keyId);
+  expectType<{ isValidRequest: boolean; payload: CopilotRequestPayload }>(
+    result,
+  );
 }
 
 export function getUserMessageTest(payload: CopilotRequestPayload) {
-  const result = getUserMessage(payload)
-  expectType<string>(result)
+  const result = getUserMessage(payload);
+  expectType<string>(result);
 }
 
 export function getUserConfirmationTest(payload: CopilotRequestPayload) {
-  const result = getUserConfirmation(payload)
+  const result = getUserConfirmation(payload);
 
   if (result === undefined) {
-    expectType<undefined>(result)
-    return
+    expectType<undefined>(result);
+    return;
   }
 
-  expectType<{ accepted: boolean; id?: string; metadata: Record<string, unknown> }>(result)
+  expectType<{
+    accepted: boolean;
+    id?: string;
+    metadata: Record<string, unknown>;
+  }>(result);
 }
 
 export async function promptTest() {
   const result = await prompt("What is the capital of France?", {
     model: "gpt-4",
     token: "secret",
-  })
+  });
 
-  expectType<string>(result.requestId)
-  expectType<string>(result.message.content)
+  expectType<string>(result.requestId);
+  expectType<string>(result.message.content);
 
   // with custom fetch
   await prompt("What is the capital of France?", {
     model: "gpt-4",
     token: "secret",
     request: {
-      fetch: () => { }
-    }
-  })
+      fetch: () => {},
+    },
+  });
 
   // @ts-expect-error - 2nd argument is required
-  prompt("What is the capital of France?")
+  prompt("What is the capital of France?");
 
   // @ts-expect-error - token argument is required
-  prompt("What is the capital of France?", { model: "" })
+  prompt("What is the capital of France?", { model: "" });
 }
 
 export async function promptWithToolsTest() {
@@ -307,16 +337,16 @@ export async function promptWithToolsTest() {
           description: "",
           parameters: {},
           strict: true,
-        }
-      }
-    ]
-  })
+        },
+      },
+    ],
+  });
 }
 
 export async function promptWithMessageAndMessages() {
   await prompt("What about Spain?", {
     model: "gpt-4",
-    token: 'secret',
+    token: "secret",
     messages: [
       { role: "user", content: "What is the capital of France?" },
       { role: "assistant", content: "The capital of France is Paris." },
@@ -327,7 +357,7 @@ export async function promptWithMessageAndMessages() {
 export async function promptWithoutMessageButMessages() {
   await prompt({
     model: "gpt-4",
-    token: 'secret',
+    token: "secret",
     messages: [
       { role: "user", content: "What is the capital of France?" },
       { role: "assistant", content: "The capital of France is Paris." },
@@ -336,13 +366,18 @@ export async function promptWithoutMessageButMessages() {
   });
 }
 
-export async function getFunctionCallsTest(promptResponsePayload: PromptResult) {
-  const result = getFunctionCalls(promptResponsePayload)
+export async function getFunctionCallsTest(
+  promptResponsePayload: PromptResult,
+) {
+  const result = getFunctionCalls(promptResponsePayload);
 
-  expectType<{
-    id: string, function: {
-      name: string,
-      arguments: string,
-    }
-  }[]>(result)
+  expectType<
+    {
+      id: string;
+      function: {
+        name: string;
+        arguments: string;
+      };
+    }[]
+  >(result);
 }

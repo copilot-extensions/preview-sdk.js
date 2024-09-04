@@ -31,7 +31,7 @@ const payloadIsVerified = await verifyRequestByKeyId(
   keyId,
   {
     token: process.env.GITHUB_TOKEN,
-  }
+  },
 );
 // true or false
 ```
@@ -86,7 +86,7 @@ import { verifyRequestByKeyId } from "@copilot-extensions/preview-sdk";
 const payloadIsVerified = await verifyRequestByKeyId(
   request.body,
   signature,
-  key
+  key,
 );
 
 // with token
@@ -124,7 +124,7 @@ import { verify } from "@copilot-extensions/preview-sdk";
 const payloadIsVerified = await verifyRequestPayload(
   request.body,
   signature,
-  key
+  key,
 );
 // true or false
 ```
@@ -171,7 +171,7 @@ response.write(
     id: "123",
     title: "Are you sure?",
     message: "This will do something.",
-  }).toString()
+  }).toString(),
 );
 ```
 
@@ -279,7 +279,7 @@ import { verifyAndParseRequest } from "@copilot-extensions/preview-sdk";
 const { isValidRequest, payload } = await verifyAndParseRequest(
   request,
   signature,
-  key
+  key,
 );
 
 if (!isValidRequest) {

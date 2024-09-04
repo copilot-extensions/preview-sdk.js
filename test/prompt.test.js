@@ -53,7 +53,7 @@ suite("prompt", () => {
             "content-type": "application/json",
             "x-request-id": "<request-id>",
           },
-        }
+        },
       );
 
     const result = await prompt("What is the capital of France?", {
@@ -109,7 +109,7 @@ suite("prompt", () => {
             "content-type": "application/json",
             "x-request-id": "<request-id>",
           },
-        }
+        },
       );
 
     const result = await prompt("What about Spain?", {
@@ -170,7 +170,7 @@ suite("prompt", () => {
             "content-type": "application/json",
             "x-request-id": "<request-id>",
           },
-        }
+        },
       );
 
     const result = await prompt("What about Spain?", {
@@ -230,7 +230,7 @@ suite("prompt", () => {
             "content-type": "application/json",
             "x-request-id": "<request-id>",
           },
-        }
+        },
       );
 
     const result = await prompt({
@@ -300,7 +300,7 @@ suite("prompt", () => {
             "content-type": "application/json",
             "x-request-id": "<request-id>",
           },
-        }
+        },
       );
 
     const result = await prompt("Call the function", {
@@ -405,7 +405,7 @@ suite("prompt", () => {
               arguments: call.function.arguments,
             },
           };
-        })
+        }),
       );
     });
 

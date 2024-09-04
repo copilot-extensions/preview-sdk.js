@@ -58,7 +58,7 @@ test("verifyRequestByKeyId()", async (t) => {
           "content-type": "application/json",
           "x-request-id": "<request-id>",
         },
-      }
+      },
     );
   const testRequest = defaultRequest.defaults({
     request: { fetch: fetchMock },
@@ -171,7 +171,7 @@ test("fetchVerificationKeys()", async (t) => {
           "content-type": "application/json",
           "x-request-id": "<request-id>",
         },
-      }
+      },
     );
   const testRequest = defaultRequest.defaults({
     request: { fetch: fetchMock },

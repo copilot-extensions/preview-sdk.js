@@ -54,14 +54,16 @@ agent.on(
       }
 
       await respond.text(
-        prompt.stream("Please tell me a joke about Mona Lisa, Github's mascot.")
+        prompt.stream(
+          "Please tell me a joke about Mona Lisa, Github's mascot.",
+        ),
       );
       return;
     }
 
     log.warn("Received an unknown confirmation:", confirmation.id);
     await respond.text("Hmm, something went wrong. Please try again later.");
-  }
+  },
 );
 
 createServer(createNodeMiddleware(agent)).listen(3000);
@@ -172,7 +174,7 @@ copilotAgent.on("function_call", async ({ log, name, parameters }) => {
   log.info(
     "Received a function call for %s with parameters %o",
     name,
-    parameters
+    parameters,
   );
 });
 
@@ -192,7 +194,7 @@ await copilotAgent.receive({ payload });
 const { isValidRequest, payload } = await copilotAgent.verifyAndParse(
   payload,
   signature,
-  keyId
+  keyId,
 );
 ```
 

@@ -78,7 +78,7 @@ suite("request parsing", () => {
             "content-type": "application/json",
             "x-request-id": "<request-id>",
           },
-        }
+        },
       );
     const testRequest = defaultRequest.defaults({
       request: { fetch: fetchMock },
@@ -90,7 +90,7 @@ suite("request parsing", () => {
 
     t.assert.deepStrictEqual(
       { isValidRequest: true, payload: JSON.parse(RAW_BODY) },
-      result
+      result,
     );
   });
 
@@ -136,7 +136,7 @@ suite("request parsing", () => {
         id: "some-confirmation-id",
         metadata: { someConfirmationMetadata: "value" },
       },
-      result
+      result,
     );
   });
 });
