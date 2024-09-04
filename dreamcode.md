@@ -20,37 +20,31 @@ Please, any questions/feedback/feelings are welcome. This is a safe space. Pleas
 ```js
 import { createServer } from "http";
 
-import {
-  CopilotExtension,
-  createNodeMiddleware,
-} from "@octokit/copilot-extension";
+import { CopilotAgent, createNodeMiddleware } from "@octokit/copilot-extension";
 
-const copilotExtension = new CopilotExtension({
+const agent = new CopilotAgent({
   userAgent: "my-app-name",
 });
 
-copilotExtension.on(
-  "message",
-  async ({ message, octokit, prompt, respond, log }) => {
-    log.info("Received a message:", message.content);
+agent.on("message", async ({ message, octokit, prompt, respond, log }) => {
+  log.info("Received a message:", message.content);
 
-    const { data: user } = await octokit.request("GET /user");
-    await respond.text(`Hello, ${user.login}!`);
+  const { data: user } = await octokit.request("GET /user");
+  await respond.text(`Hello, ${user.login}!`);
 
-    await respond.confirmation({
-      title: "Would you like to hear a joke?",
-      message: "I have a joke about construction, but I'm still working on it.",
-      id: "joke",
-      // optional
-      meta: {
-        other: "data",
-      },
-    });
-  }
-);
+  await respond.confirmation({
+    title: "Would you like to hear a joke?",
+    message: "I have a joke about construction, but I'm still working on it.",
+    id: "joke",
+    // optional
+    meta: {
+      other: "data",
+    },
+  });
+});
 
 // https://github.com/github/copilot-partners/blob/6d1cde3a1abb147da53f1a39864661dc824d40b5/docs/confirmations.md
-copilotExtension.on(
+agent.on(
   "confirmation",
   async ({ confirmation, octokit, prompt, respond, log }) => {
     if (confirmation.id === "joke") {
@@ -69,6 +63,9 @@ copilotExtension.on(
     await respond.text("Hmm, something went wrong. Please try again later.");
   }
 );
+
+createServer(createNodeMiddleware(agent)).listen(3000);
+agent.log.info("Listening on http://localhost:3000");
 ```
 
 ### Book a flight
@@ -78,12 +75,9 @@ I'm using [@daveebbelaar](https://github.com/daveebbelaar)'s example of a flight
 ```js
 import { createServer } from "http";
 
-import {
-  CopilotExtension,
-  createNodeMiddleware,
-} from "@octokit/copilot-extension";
+import { CopilotAgent, createNodeMiddleware } from "@octokit/copilot-extension";
 
-const copilotExtension = new CopilotExtension({
+const copilotAgent = new CopilotAgent({
   userAgent: "book-a-flight",
 
   // TBD: are we supporting a default model? Globally, or for an enterprise/organization/user?
@@ -169,12 +163,12 @@ const copilotExtension = new CopilotExtension({
 
 // you can still hook into messages and function calls before they are passed through
 // to the chat completions API.
-copilotExtension.on("message", async ({ log }) => {
+copilotAgent.on("message", async ({ log }) => {
   log.info("Received a message:", message.content);
 
   // if you don't want a request to be forwarded to the chat completions API, call `await respond.done()` explicitly
 });
-copilotExtension.on("function_call", async ({ log, name, parameters }) => {
+copilotAgent.on("function_call", async ({ log, name, parameters }) => {
   log.info(
     "Received a function call for %s with parameters %o",
     name,
@@ -182,20 +176,20 @@ copilotExtension.on("function_call", async ({ log, name, parameters }) => {
   );
 });
 
-createServer(createNodeMiddleware(copilotExtension)).listen(3000);
-copilotExtension.log.info("Listening on http://localhost:3000");
+createServer(createNodeMiddleware(copilotAgent)).listen(3000);
+copilotAgent.log.info("Listening on http://localhost:3000");
 ```
 
 For other environments, these methods are available:
 
 ```js
 // verify the payload and call handlers
-await copilotExtension.verifyAndReceive({ payload, signature, keyId });
+await copilotAgent.verifyAndReceive({ payload, signature, keyId });
 // same, but skip verification
-await copilotExtension.receive({ payload });
+await copilotAgent.receive({ payload });
 
 // and if you don't want to use the event-based API
-const { isValidRequest, payload } = await copilotExtension.verifyAndParse(
+const { isValidRequest, payload } = await copilotAgent.verifyAndParse(
   payload,
   signature,
   keyId
