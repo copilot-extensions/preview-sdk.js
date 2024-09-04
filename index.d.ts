@@ -256,21 +256,12 @@ export interface GetUserConfirmationInterface {
 
 /** 
  * model names supported by Copilot API
- * 
- * Based on https://api.githubcopilot.com/models from 2024-09-02
+ * A list of currently supported models can be retrieved at
+ * https://api.githubcopilot.com/models. We set `ModelName` to `string` 
+ * instead of a union of the supported models as we cannot give
+ * guarantees about the supported models in the future.
  */
-export type ModelName =
-  | "gpt-3.5-turbo"
-  | "gpt-3.5-turbo-0613"
-  | "gpt-4"
-  | "gpt-4-0613"
-  | "gpt-4-o-preview"
-  | "gpt-4o"
-  | "gpt-4o-2024-05-13"
-  | "text-embedding-3-small"
-  | "text-embedding-3-small-inference"
-  | "text-embedding-ada-002"
-  | "text-embedding-ada-002-index"
+export type ModelName = string
 
 export interface PromptFunction {
   type: "function"
@@ -284,7 +275,7 @@ export interface PromptFunction {
 }
 
 export type PromptOptions = {
-  model: ModelName
+  model?: ModelName
   token: string
   tools?: PromptFunction[]
   messages?: InteropMessage[]

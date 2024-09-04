@@ -45,7 +45,6 @@ import { prompt } from "@copilot-extensions/preview-sdk";
 
 try {
   const { message } = await prompt("What is the capital of France?", {
-    model: "gpt-4",
     token: process.env.TOKEN,
   });
 
