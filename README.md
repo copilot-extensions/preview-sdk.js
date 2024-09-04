@@ -2,7 +2,21 @@
 
 > SDK for building GitHub Copilot Extensions
 
-⚠️ **This SDK is a preview and subject to change**. We will however adhere to [semantic versioning](https://semver.org/), so it's save to use for early experimentation. Just beware there will be breaking changes. Best to watch this repository's releases for updates.
+This SDK simplifies the process of building GitHub Copilot Extensions. Building Copilot Extensions previously required manual handling of request verification, response formatting, and API interactions. This SDK simplifies these tasks, allowing you to focus on your extension's core functionality rather than building boilerplate code. Use it to integrate your tools, APIs, or data sources directly into Copilot Chat.
+
+We consider this SDK alpha software in terms of API stability, but we adhere to semantic-versioning, so it's safe to use today.
+
+## Key features
+
+- Request payload verification
+- Payload parsing
+- Response building
+
+## Benefits
+
+- Handles security and response formatting requirements
+- Provides utilities for common extension tasks
+- Streamlines the development process
 
 ## Usage
 
