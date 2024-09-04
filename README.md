@@ -8,14 +8,13 @@ We consider this SDK alpha software in terms of API stability, but we adhere to 
 
 ## Key features
 
-- Request verification
-- Response formatting for Copilot Chat
+- Request payload verification
 - Payload parsing
-- GitHub API interactions
+- Response building
 
 ## Benefits
 
-- Handles security and formatting requirements
+- Handles security and response formatting requirements
 - Provides utilities for common extension tasks
 - Streamlines the development process
 
