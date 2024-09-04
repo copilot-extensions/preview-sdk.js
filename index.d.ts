@@ -275,7 +275,7 @@ export interface PromptFunction {
 }
 
 export type PromptOptions = {
-  model: ModelName
+  model?: ModelName
   token: string
   tools?: PromptFunction[]
   messages?: InteropMessage[]

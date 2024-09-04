@@ -58,7 +58,67 @@ suite("prompt", () => {
 
     const result = await prompt("What is the capital of France?", {
       token: "secret",
-      model: "gpt-4",
+      request: { fetch: fetchMock },
+    });
+
+    t.assert.deepEqual(result, {
+      requestId: "<request-id>",
+      message: {
+        content: "<response text>",
+      },
+    });
+  });
+
+  test("options.prompt", async (t) => {
+    const mockAgent = new MockAgent();
+    function fetchMock(url, opts) {
+      opts ||= {};
+      opts.dispatcher = mockAgent;
+      return fetch(url, opts);
+    }
+
+    mockAgent.disableNetConnect();
+    const mockPool = mockAgent.get("https://api.githubcopilot.com");
+    mockPool
+      .intercept({
+        method: "post",
+        path: `/chat/completions`,
+        body: JSON.stringify({
+          messages: [
+            { role: "system", content: "You are a helpful assistant." },
+            { role: "user", content: "What is the capital of France?" },
+            { role: "assistant", content: "The capital of France is Paris." },
+            { role: "user", content: "What about Spain?" },
+          ],
+          model: "<custom-model>",
+        }),
+      })
+      .reply(
+        200,
+        {
+          choices: [
+            {
+              message: {
+                content: "<response text>",
+              },
+            },
+          ],
+        },
+        {
+          headers: {
+            "content-type": "application/json",
+            "x-request-id": "<request-id>",
+          },
+        }
+      );
+
+    const result = await prompt("What about Spain?", {
+      model: "<custom-model>",
+      token: "secret",
+      messages: [
+        { role: "user", content: "What is the capital of France?" },
+        { role: "assistant", content: "The capital of France is Paris." },
+      ],
       request: { fetch: fetchMock },
     });
 
@@ -114,7 +174,6 @@ suite("prompt", () => {
       );
 
     const result = await prompt("What about Spain?", {
-      model: "gpt-4",
       token: "secret",
       messages: [
         { role: "user", content: "What is the capital of France?" },
@@ -175,7 +234,6 @@ suite("prompt", () => {
       );
 
     const result = await prompt({
-      model: "gpt-4",
       token: "secret",
       messages: [
         { role: "user", content: "What is the capital of France?" },
@@ -247,7 +305,6 @@ suite("prompt", () => {
 
     const result = await prompt("Call the function", {
       token: "secret",
-      model: "gpt-4",
       tools: [
         {
           type: "function",
@@ -305,7 +362,6 @@ suite("prompt", () => {
 
     const result = await prompt("What is the capital of France?", {
       token: "secret",
-      model: "gpt-4",
       request: { fetch: fetchMock },
     });
 

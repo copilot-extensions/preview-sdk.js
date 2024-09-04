@@ -291,9 +291,6 @@ export async function promptTest() {
   // @ts-expect-error - 2nd argument is required
   prompt("What is the capital of France?")
 
-  // @ts-expect-error - model argument is required
-  prompt("What is the capital of France?", { token: "" })
-
   // @ts-expect-error - token argument is required
   prompt("What is the capital of France?", { model: "" })
 }
