@@ -424,7 +424,7 @@ await prompt({
 
 #### `prompt.stream(message, options)`
 
-Works the same way as `prompt()`, but returns an async iterator instead of a promise.
+Works the same way as `prompt()`, but resolves with a `stream` key instead of a `message` key.
 
 ```js
 import { prompt } from "@copilot-extensions/preview-sdk";
