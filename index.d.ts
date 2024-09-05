@@ -175,7 +175,7 @@ export interface OpenAICompatibilityPayload {
 export interface CopilotMessage {
   role: string;
   content: string;
-  copilot_references: MessageCopilotReference[];
+  copilot_references?: MessageCopilotReference[];
   copilot_confirmations?: MessageCopilotConfirmation[];
   tool_calls?: {
     function: {
@@ -300,8 +300,9 @@ export interface PromptFunction {
 }
 
 export type PromptOptions = {
-  model?: ModelName;
   token: string;
+  endpoint?: string;
+  model?: ModelName;
   tools?: PromptFunction[];
   messages?: InteropMessage[];
   request?: {
@@ -314,12 +315,25 @@ export type PromptResult = {
   message: CopilotMessage;
 };
 
+export type PromptStreamResult = {
+  requestId: string;
+  stream: ReadableStream<Uint8Array>;
+};
+
 // https://stackoverflow.com/a/69328045
 type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] };
 
 interface PromptInterface {
   (userPrompt: string, options: PromptOptions): Promise<PromptResult>;
   (options: WithRequired<PromptOptions, "messages">): Promise<PromptResult>;
+  stream: PromptStreamInterface;
+}
+
+interface PromptStreamInterface {
+  (userPrompt: string, options: PromptOptions): Promise<PromptStreamResult>;
+  (
+    options: WithRequired<PromptOptions, "messages">,
+  ): Promise<PromptStreamResult>;
 }
 
 interface GetFunctionCallsInterface {

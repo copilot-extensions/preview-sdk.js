@@ -422,6 +422,22 @@ await prompt({
 });
 ```
 
+#### `prompt.stream(message, options)`
+
+Works the same way as `prompt()`, but resolves with a `stream` key instead of a `message` key.
+
+```js
+import { prompt } from "@copilot-extensions/preview-sdk";
+
+const { requestId, stream } = prompt.stream("What is the capital of France?", {
+  token: process.env.TOKEN,
+});
+
+for await (const chunk of stream) {
+  console.log(new TextDecoder().decode(chunk));
+}
+```
+
 ### `getFunctionCalls()`
 
 Convenience metthod if a result from a `prompt()` call includes function calls.
