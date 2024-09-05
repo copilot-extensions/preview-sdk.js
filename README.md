@@ -46,9 +46,9 @@ export default handler(request, response) {
   const textEvent = createTextEvent("Hello, world!");
   const doneEvent = createDoneEvent();
 
-  response.write(ackEvent.toString());
-  response.write(textEvent.toString());
-  response.end(doneEvent.toString());
+  response.write(ackEvent);
+  response.write(textEvent);
+  response.end(doneEvent);
 }
 ```
 
@@ -131,7 +131,7 @@ const payloadIsVerified = await verifyRequestPayload(
 
 ### Response
 
-All `create*Event()` methods return an object with a `.toString()` method, which is called automatically when a string is expected. Unfortunately that's not the case for `response.write()`, you need to call `.toString()` explicitly.
+All `create*Event()` methods return a string that can directly be written to the response stream.
 
 #### `createAckEvent()`
 
@@ -141,7 +141,7 @@ The `ack` event should only be sent once.
 ```js
 import { createAckEvent } from "@copilot-extensions/preview-sdk";
 
-response.write(createAckEvent().toString());
+response.write(createAckEvent());
 ```
 
 #### `createTextEvent(message)`
@@ -151,8 +151,8 @@ Send a text message to the chat UI. Multiple messages can be sent. The `message`
 ```js
 import { createTextEvent } from "@copilot-extensions/preview-sdk";
 
-response.write(createTextEvent("Hello, world!").toString());
-response.write(createTextEvent("Hello, again!").toString());
+response.write(createTextEvent("Hello, world!"));
+response.write(createTextEvent("Hello, again!"));
 ```
 
 #### `createConfirmationEvent({ id, title, message, metadata })`
@@ -171,7 +171,7 @@ response.write(
     id: "123",
     title: "Are you sure?",
     message: "This will do something.",
-  }).toString(),
+  }),
 );
 ```
 
@@ -209,7 +209,7 @@ response.write(
         display_icon: "issue-opened",
         display_url: "https://github.com/monalisa/hello-world/issues/123",
     },
-  ]).toString()
+  ])
 );
 ```
 
@@ -231,7 +231,7 @@ The `done` event should only be sent once, at the end of the response. No furthe
 ```js
 import { createDoneEvent } from "@copilot-extensions/preview-sdk";
 
-response.write(createDoneEvent().toString());
+response.write(createDoneEvent());
 ```
 
 ### Parsing

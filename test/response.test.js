@@ -16,23 +16,17 @@ suite("response", () => {
 
   test("createAckEvent()", (t) => {
     const event = createAckEvent();
-    t.assert.equal(undefined, event.event);
-    t.assert.snapshot(event.data);
-    t.assert.snapshot(event.toString());
+    t.assert.snapshot(event);
   });
 
   test("createDoneEvent()", (t) => {
     const event = createDoneEvent();
-    t.assert.equal(undefined, event.event);
-    t.assert.snapshot(event.data);
-    t.assert.snapshot(event.toString());
+    t.assert.snapshot(event);
   });
 
   test("createTextEvent()", (t) => {
     const event = createTextEvent("test");
-    t.assert.equal(undefined, event.event);
-    t.assert.snapshot(event.data);
-    t.assert.snapshot(event.toString());
+    t.assert.snapshot(event);
   });
 
   test("createConfirmationEvent()", (t) => {
@@ -42,9 +36,7 @@ suite("response", () => {
       message: "message",
       metadata: { foo: "bar" },
     });
-    t.assert.equal("copilot_confirmation", event.event);
-    t.assert.snapshot(event.data);
-    t.assert.snapshot(event.toString());
+    t.assert.snapshot(event);
   });
 
   test("createErrorsEvent()", (t) => {
@@ -71,9 +63,7 @@ suite("response", () => {
       functionError,
       agentError,
     ]);
-    t.assert.equal("copilot_errors", event.event);
-    t.assert.snapshot(event.data);
-    t.assert.snapshot(event.toString());
+    t.assert.snapshot(event);
   });
 
   test("createReferencesEvent()", (t) => {
@@ -96,9 +86,6 @@ suite("response", () => {
         },
       },
     ]);
-
-    t.assert.equal("copilot_references", event.event);
-    t.assert.snapshot(event.data);
-    t.assert.snapshot(event.toString());
+    t.assert.snapshot(event);
   });
 });

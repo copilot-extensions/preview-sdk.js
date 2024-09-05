@@ -1,118 +1,23 @@
 exports[`response > createAckEvent() 1`] = `
-{
-  "choices": [
-    {
-      "delta": {
-        "content": "",
-        "role": "assistant"
-      }
-    }
-  ]
-}
-`;
-
-exports[`response > createAckEvent() 2`] = `
 "data: {\\"choices\\":[{\\"delta\\":{\\"content\\":\\"\\",\\"role\\":\\"assistant\\"}}]}\\n\\n"
 `;
 
 exports[`response > createConfirmationEvent() 1`] = `
-{
-  "type": "action",
-  "title": "title",
-  "message": "message",
-  "confirmation": {
-    "id": "123",
-    "foo": "bar"
-  }
-}
-`;
-
-exports[`response > createConfirmationEvent() 2`] = `
 "event: copilot_confirmation\\ndata: {\\"type\\":\\"action\\",\\"title\\":\\"title\\",\\"message\\":\\"message\\",\\"confirmation\\":{\\"id\\":\\"123\\",\\"foo\\":\\"bar\\"}}\\n\\n"
 `;
 
 exports[`response > createDoneEvent() 1`] = `
-{
-  "choices": [
-    {
-      "finish_reason": "stop",
-      "delta": {
-        "content": null
-      }
-    }
-  ]
-}
-`;
-
-exports[`response > createDoneEvent() 2`] = `
 "data: {\\"choices\\":[{\\"finish_reason\\":\\"stop\\",\\"delta\\":{\\"content\\":null}}]}\\n\\ndata: [DONE]\\n\\n"
 `;
 
 exports[`response > createErrorsEvent() 1`] = `
-[
-  {
-    "type": "reference",
-    "code": "1",
-    "message": "test reference error",
-    "identifier": "reference-identifier"
-  },
-  {
-    "type": "function",
-    "code": "1",
-    "message": "test function error",
-    "identifier": "function-identifier"
-  },
-  {
-    "type": "agent",
-    "code": "1",
-    "message": "test agent error",
-    "identifier": "agent-identifier"
-  }
-]
-`;
-
-exports[`response > createErrorsEvent() 2`] = `
 "event: copilot_errors\\ndata: [{\\"type\\":\\"reference\\",\\"code\\":\\"1\\",\\"message\\":\\"test reference error\\",\\"identifier\\":\\"reference-identifier\\"},{\\"type\\":\\"function\\",\\"code\\":\\"1\\",\\"message\\":\\"test function error\\",\\"identifier\\":\\"function-identifier\\"},{\\"type\\":\\"agent\\",\\"code\\":\\"1\\",\\"message\\":\\"test agent error\\",\\"identifier\\":\\"agent-identifier\\"}]\\n\\n"
 `;
 
 exports[`response > createReferencesEvent() 1`] = `
-[
-  {
-    "type": "test.story",
-    "id": "test",
-    "data": {
-      "file": "test.js",
-      "start": "1",
-      "end": "42",
-      "content": "function test() {...}"
-    },
-    "is_implicit": false,
-    "metadata": {
-      "display_name": "Lines 1-42 from test.js",
-      "display_icon": "test-icon",
-      "display_url": "http://github.com/monalisa/hello-world/blob/main/test.js#L1-L42"
-    }
-  }
-]
-`;
-
-exports[`response > createReferencesEvent() 2`] = `
 "event: copilot_references\\ndata: [{\\"type\\":\\"test.story\\",\\"id\\":\\"test\\",\\"data\\":{\\"file\\":\\"test.js\\",\\"start\\":\\"1\\",\\"end\\":\\"42\\",\\"content\\":\\"function test() {...}\\"},\\"is_implicit\\":false,\\"metadata\\":{\\"display_name\\":\\"Lines 1-42 from test.js\\",\\"display_icon\\":\\"test-icon\\",\\"display_url\\":\\"http://github.com/monalisa/hello-world/blob/main/test.js#L1-L42\\"}}]\\n\\n"
 `;
 
 exports[`response > createTextEvent() 1`] = `
-{
-  "choices": [
-    {
-      "delta": {
-        "content": "test",
-        "role": "assistant"
-      }
-    }
-  ]
-}
-`;
-
-exports[`response > createTextEvent() 2`] = `
 "data: {\\"choices\\":[{\\"delta\\":{\\"content\\":\\"test\\",\\"role\\":\\"assistant\\"}}]}\\n\\n"
 `;
