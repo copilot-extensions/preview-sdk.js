@@ -33,11 +33,10 @@ interface VerifyRequestByKeyIdInterface {
 // response types
 
 export interface CreateAckEventInterface {
-  (): ResponseEvent<"ack">;
+  (): string;
 }
-
 export interface CreateTextEventInterface {
-  (message: string): ResponseEvent<"text">;
+  (message: string): string;
 }
 
 export type CreateConfirmationEventOptions = {
@@ -50,87 +49,17 @@ export type CreateConfirmationEventOptions = {
 export interface CreateConfirmationEventInterface {
   (
     options: CreateConfirmationEventOptions,
-  ): ResponseEvent<"copilot_confirmation">;
+  ): string;
 }
 export interface CreateReferencesEventInterface {
-  (references: CopilotReference[]): ResponseEvent<"copilot_references">;
+  (references: CopilotReference[]): string;
 }
 export interface CreateErrorsEventInterface {
-  (errors: CopilotError[]): ResponseEvent<"copilot_errors">;
+  (errors: CopilotError[]): string;
 }
 export interface CreateDoneEventInterface {
-  (): ResponseEvent<"done">;
+  (): string;
 }
-
-type ResponseEventType =
-  | "ack"
-  | "done"
-  | "text"
-  | "copilot_references"
-  | "copilot_confirmation"
-  | "copilot_errors";
-type EventsWithoutEventKey = "ack" | "done" | "text";
-type ResponseEvent<T extends ResponseEventType = "text"> =
-  T extends EventsWithoutEventKey
-    ? {
-        data: T extends "ack"
-          ? CopilotAckResponseEventData
-          : T extends "done"
-            ? CopilotDoneResponseEventData
-            : T extends "text"
-              ? CopilotTextResponseEventData
-              : never;
-        toString: () => string;
-      }
-    : {
-        event: T;
-        data: T extends "copilot_references"
-          ? CopilotReferenceResponseEventData
-          : T extends "copilot_confirmation"
-            ? CopilotConfirmationResponseEventData
-            : T extends "copilot_errors"
-              ? CopilotErrorsResponseEventData
-              : never;
-        toString: () => string;
-      };
-
-type CopilotAckResponseEventData = {
-  choices: [
-    {
-      delta: InteropMessage<"assistant">;
-    },
-  ];
-};
-
-type CopilotDoneResponseEventData = {
-  choices: [
-    {
-      finish_reason: "stop";
-      delta: {
-        content: null;
-      };
-    },
-  ];
-};
-
-type CopilotTextResponseEventData = {
-  choices: [
-    {
-      delta: InteropMessage<"assistant">;
-    },
-  ];
-};
-type CopilotConfirmationResponseEventData = {
-  type: "action";
-  title: string;
-  message: string;
-  confirmation?: {
-    id: string;
-    [key: string]: any;
-  };
-};
-type CopilotErrorsResponseEventData = CopilotError[];
-type CopilotReferenceResponseEventData = CopilotReference[];
 
 type CopilotError = {
   type: "reference" | "function" | "agent";
