@@ -302,7 +302,6 @@ export function getUserConfirmationTest(payload: CopilotRequestPayload) {
 
 export async function promptTest() {
   const result = await prompt("What is the capital of France?", {
-    model: "gpt-4",
     token: "secret",
   });
 
@@ -311,7 +310,6 @@ export async function promptTest() {
 
   // with custom fetch
   await prompt("What is the capital of France?", {
-    model: "gpt-4",
     token: "secret",
     request: {
       fetch: () => {},
@@ -327,7 +325,6 @@ export async function promptTest() {
 
 export async function promptWithToolsTest() {
   await prompt("What is the capital of France?", {
-    model: "gpt-4",
     token: "secret",
     tools: [
       {
@@ -364,6 +361,24 @@ export async function promptWithoutMessageButMessages() {
       { role: "user", content: "What about Spain?" },
     ],
   });
+}
+
+export async function otherPromptOptionsTest() {
+  const result = await prompt("What is the capital of France?", {
+    token: "secret",
+    model: "gpt-4",
+    endpoint: "https://api.githubcopilot.com",
+  });
+}
+
+export async function promptStreamTest() {
+  const result = await prompt.stream("What is the capital of France?", {
+    model: "gpt-4",
+    token: "secret",
+  });
+
+  expectType<string>(result.requestId);
+  expectType<ReadableStream<Uint8Array>>(result.stream);
 }
 
 export async function getFunctionCallsTest(

@@ -1,4 +1,5 @@
 import { test, suite } from "node:test";
+import assert from "node:assert";
 
 import { MockAgent } from "undici";
 
@@ -84,13 +85,13 @@ suite("prompt", () => {
         method: "post",
         path: `/chat/completions`,
         body: JSON.stringify({
+          model: "<custom-model>",
           messages: [
             { role: "system", content: "You are a helpful assistant." },
             { role: "user", content: "What is the capital of France?" },
             { role: "assistant", content: "The capital of France is Paris." },
             { role: "user", content: "What about Spain?" },
           ],
-          model: "<custom-model>",
         }),
       })
       .reply(
@@ -190,6 +191,67 @@ suite("prompt", () => {
     });
   });
 
+  test("options.endpoint", async (t) => {
+    const mockAgent = new MockAgent();
+    function fetchMock(url, opts) {
+      opts ||= {};
+      opts.dispatcher = mockAgent;
+      return fetch(url, opts);
+    }
+
+    mockAgent.disableNetConnect();
+    const mockPool = mockAgent.get("https://my-copilot-endpoint.test");
+    mockPool
+      .intercept({
+        method: "post",
+        path: `/chat/completions`,
+        body: JSON.stringify({
+          messages: [
+            {
+              role: "system",
+              content: "You are a helpful assistant.",
+            },
+            {
+              role: "user",
+              content: "What is the capital of France?",
+            },
+          ],
+          model: "gpt-4",
+        }),
+      })
+      .reply(
+        200,
+        {
+          choices: [
+            {
+              message: {
+                content: "<response text>",
+              },
+            },
+          ],
+        },
+        {
+          headers: {
+            "content-type": "application/json",
+            "x-request-id": "<request-id>",
+          },
+        },
+      );
+
+    const result = await prompt("What is the capital of France?", {
+      token: "secret",
+      endpoint: "https://my-copilot-endpoint.test/chat/completions",
+      request: { fetch: fetchMock },
+    });
+
+    t.assert.deepEqual(result, {
+      requestId: "<request-id>",
+      message: {
+        content: "<response text>",
+      },
+    });
+  });
+
   test("single options argument", async (t) => {
     const mockAgent = new MockAgent();
     function fetchMock(url, opts) {
@@ -266,6 +328,12 @@ suite("prompt", () => {
         method: "post",
         path: `/chat/completions`,
         body: JSON.stringify({
+          tools: [
+            {
+              type: "function",
+              function: { name: "the_function", description: "The function" },
+            },
+          ],
           messages: [
             {
               role: "system",
@@ -275,13 +343,7 @@ suite("prompt", () => {
             { role: "user", content: "Call the function" },
           ],
           model: "gpt-4",
-          toolChoice: "auto",
-          tools: [
-            {
-              type: "function",
-              function: { name: "the_function", description: "The function" },
-            },
-          ],
+          toolsChoice: "auto",
         }),
       })
       .reply(
@@ -360,19 +422,51 @@ suite("prompt", () => {
         },
       });
 
-    const result = await prompt("What is the capital of France?", {
-      token: "secret",
-      request: { fetch: fetchMock },
-    });
-
-    t.assert.deepEqual(result, {
-      message: {
-        content:
-          "Sorry, an error occured with the chat completions API. (Status: 400, request ID: <request-id>)",
-        role: "Sssistant",
+    await assert.rejects(
+      async () => {
+        await prompt("What is the capital of France?", {
+          token: "secret",
+          request: { fetch: fetchMock },
+        });
       },
-      requestId: "<request-id>",
-    });
+      {
+        name: "PromptError",
+        message:
+          "[@copilot-extensions/preview-sdk] An error occured with the chat completions API",
+        request: {
+          method: "POST",
+          url: "https://api.githubcopilot.com/chat/completions",
+          headers: {
+            "content-type": "application/json; charset=UTF-8",
+            "user-agent": "copilot-extensions/preview-sdk.js",
+            accept: "application/json",
+            authorization: "Bearer [REDACTED]",
+          },
+          body: {
+            messages: [
+              {
+                content: "You are a helpful assistant.",
+                role: "system",
+              },
+              {
+                content: "What is the capital of France?",
+                role: "user",
+              },
+            ],
+            model: "gpt-4",
+            toolsChoice: undefined,
+          },
+        },
+        response: {
+          status: 400,
+          headers: [
+            ["content-type", "text/plain"],
+            ["x-request-id", "<request-id>"],
+          ],
+          body: "Bad Request",
+        },
+      },
+    );
   });
 
   suite("getFunctionCalls()", () => {
