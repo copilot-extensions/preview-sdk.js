@@ -50,7 +50,7 @@ export default handler(request, response) {
 }
 ```
 
-### Send a custom propmt
+### Send a custom prompt
 
 ```js
 import { prompt } from "@copilot-extensions/preview-sdk";
@@ -184,7 +184,7 @@ Send a list of references to the chat UI. The `references` argument must be an a
 
 The following properties are optional
 
-- `data`: object with any properties.
+- `data`: object with any properties
 - `is_implicit`: a boolean
 - `metadata`: an object with a required `display_name` and the optional properties: `display_icon` and `display_url`
 
