@@ -218,7 +218,7 @@ export async function promptTest() {
   await prompt("What is the capital of France?", {
     token: "secret",
     request: {
-      fetch: () => { },
+      fetch: () => {},
     },
   });
 
