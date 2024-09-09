@@ -35,7 +35,7 @@ suite("prompt", () => {
               content: "What is the capital of France?",
             },
           ],
-          model: "gpt-4",
+          model: "gpt-4o",
         }),
       })
       .reply(
@@ -152,7 +152,7 @@ suite("prompt", () => {
             { role: "assistant", content: "The capital of France is Paris." },
             { role: "user", content: "What about Spain?" },
           ],
-          model: "gpt-4",
+          model: "gpt-4o",
         }),
       })
       .reply(
@@ -216,7 +216,7 @@ suite("prompt", () => {
               content: "What is the capital of France?",
             },
           ],
-          model: "gpt-4",
+          model: "gpt-4o",
         }),
       })
       .reply(
@@ -273,7 +273,7 @@ suite("prompt", () => {
             { role: "assistant", content: "The capital of France is Paris." },
             { role: "user", content: "What about Spain?" },
           ],
-          model: "gpt-4",
+          model: "gpt-4o",
         }),
       })
       .reply(
@@ -342,7 +342,7 @@ suite("prompt", () => {
             },
             { role: "user", content: "Call the function" },
           ],
-          model: "gpt-4",
+          model: "gpt-4o",
           toolsChoice: "auto",
         }),
       })
@@ -412,7 +412,7 @@ suite("prompt", () => {
               content: "What is the capital of France?",
             },
           ],
-          model: "gpt-4",
+          model: "gpt-4o",
         }),
       })
       .reply(400, "Bad Request", {
@@ -453,7 +453,7 @@ suite("prompt", () => {
                 role: "user",
               },
             ],
-            model: "gpt-4",
+            model: "gpt-4o",
             toolsChoice: undefined,
           },
         },

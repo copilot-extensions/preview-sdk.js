@@ -47,9 +47,7 @@ export type CreateConfirmationEventOptions = {
 };
 
 export interface CreateConfirmationEventInterface {
-  (
-    options: CreateConfirmationEventOptions,
-  ): string;
+  (options: CreateConfirmationEventOptions): string;
 }
 export interface CreateReferencesEventInterface {
   (references: CopilotReference[]): string;
