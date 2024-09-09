@@ -1,7 +1,5 @@
 # `@copilot-extensions/preview-sdk`
 
-> SDK for building GitHub Copilot Extensions
-
 This SDK simplifies the process of building GitHub Copilot Extensions. Building Copilot Extensions previously required manual handling of request verification, response formatting, and API interactions. This SDK simplifies these tasks, allowing you to focus on your extension's core functionality rather than building boilerplate code. Use it to integrate your tools, APIs, or data sources directly into Copilot Chat.
 
 We consider this SDK alpha software in terms of API stability, but we adhere to semantic-versioning, so it's safe to use today.
@@ -69,6 +67,8 @@ try {
 ```
 
 ## API
+
+> Note: Some of these docs pages are a work in progress and scheduled to be available by Sept. 17th.
 
 ### Verification
 
