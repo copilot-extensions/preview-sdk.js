@@ -461,7 +461,7 @@ While implementing the lower-level functionality, we also dream big: what would 
 
 ## Contributing
 
-Please see [CONTRIBUTING.md](.github/CONTRIBUTING.md)
+Please see [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## License
 
