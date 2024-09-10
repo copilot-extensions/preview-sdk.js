@@ -18,7 +18,7 @@ By participating you agree to abide by its terms.
 
 - [Node.js](https://nodejs.org/) (v22.x)
 
-  We currently depend on Node 22+ for local development as we use new test APIs such as [snapshot testing](https://nodejs.org/api/test.html#snapshot-testing)! At some point we might move to a different test runner, but this works great to move fast in early aplha days.
+  We currently depend on Node 22+ for local development as we use new test APIs such as [snapshot testing](https://nodejs.org/api/test.html#snapshot-testing)! At some point we might move to a different test runner, but this works great to move fast in early alpha days.
 
 ### Setup
 
