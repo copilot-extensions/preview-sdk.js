@@ -100,7 +100,7 @@ export interface OpenAICompatibilityPayload {
 }
 
 export interface CopilotMessage {
-  role: string;
+  role: MessageRole;
   content: string;
   copilot_references?: MessageCopilotReference[];
   copilot_confirmations?: MessageCopilotConfirmation[];
@@ -116,8 +116,8 @@ export interface CopilotMessage {
   [key: string]: unknown;
 }
 
-export type InteropMessageRole = 'system' | 'user' | 'assistant';
-export interface InteropMessage<TRole extends InteropMessageRole = InteropMessageRole> {
+export type MessageRole = 'system' | 'user' | 'assistant';
+export interface InteropMessage<TRole extends MessageRole = MessageRole> {
   role: TRole;
   content: string;
   name?: string;
