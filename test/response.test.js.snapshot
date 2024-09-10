@@ -1,5 +1,5 @@
 exports[`response > createAckEvent() 1`] = `
-"data: {\\"choices\\":[{\\"delta\\":{\\"content\\":\\"\\",\\"role\\":\\"assistant\\"}}]}\\n\\n"
+"data: {\\"choices\\":[{\\"index\\":0,\\"delta\\":{\\"content\\":\\"\\",\\"role\\":\\"assistant\\"}}]}\\n\\n"
 `;
 
 exports[`response > createConfirmationEvent() 1`] = `
@@ -7,7 +7,7 @@ exports[`response > createConfirmationEvent() 1`] = `
 `;
 
 exports[`response > createDoneEvent() 1`] = `
-"data: {\\"choices\\":[{\\"finish_reason\\":\\"stop\\",\\"delta\\":{\\"content\\":null}}]}\\n\\ndata: [DONE]\\n\\n"
+"data: {\\"choices\\":[{\\"index\\":0,\\"finish_reason\\":\\"stop\\",\\"delta\\":{\\"content\\":null}}]}\\n\\ndata: [DONE]\\n\\n"
 `;
 
 exports[`response > createErrorsEvent() 1`] = `
@@ -19,5 +19,5 @@ exports[`response > createReferencesEvent() 1`] = `
 `;
 
 exports[`response > createTextEvent() 1`] = `
-"data: {\\"choices\\":[{\\"delta\\":{\\"content\\":\\"test\\",\\"role\\":\\"assistant\\"}}]}\\n\\n"
+"data: {\\"choices\\":[{\\"index\\":0,\\"delta\\":{\\"content\\":\\"test\\",\\"role\\":\\"assistant\\"}}]}\\n\\n"
 `;
