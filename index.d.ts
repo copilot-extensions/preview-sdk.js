@@ -116,7 +116,8 @@ export interface CopilotMessage {
   [key: string]: unknown;
 }
 
-export interface InteropMessage<TRole extends string = string> {
+export type InteropMessageRole = 'system' | 'user' | 'assistant';
+export interface InteropMessage<TRole extends InteropMessageRole = InteropMessageRole> {
   role: TRole;
   content: string;
   name?: string;
