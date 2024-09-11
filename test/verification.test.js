@@ -1,5 +1,4 @@
-import { test } from "node:test";
-import assert from "node:assert/strict";
+import test from "ava";
 
 import { request as defaultRequest } from "@octokit/request";
 import { MockAgent } from "undici";
@@ -24,7 +23,7 @@ export const SIGNATURE =
   "MEYCIQC8aEmkYA/4EQrXEOi2OL9nfpbnrCxkMc6HrH7b6SogKgIhAIYBThcpzkCCswiV1+pOaPI+zFQF9ShG61puoKs9rJjq";
 
 test("smoke", (t) => {
-  assert.equal(typeof verifyRequestByKeyId, "function");
+  t.is(typeof verifyRequestByKeyId, "function");
 });
 
 test("verifyRequestByKeyId()", async (t) => {
@@ -68,56 +67,56 @@ test("verifyRequestByKeyId()", async (t) => {
     request: testRequest,
   });
 
-  assert.deepEqual(result, true);
+  t.deepEqual(result, true);
 });
 
-test("verifyRequestByKeyId() - invalid arguments", (t) => {
-  assert.rejects(verifyRequestByKeyId(RAW_BODY, SIGNATURE), {
+test("verifyRequestByKeyId() - invalid arguments", async (t) => {
+  t.throwsAsync(verifyRequestByKeyId(RAW_BODY, SIGNATURE), {
     name: "Error",
     message: "[@copilot-extensions/preview-sdk] Invalid keyId",
   });
 
-  assert.rejects(verifyRequestByKeyId("", SIGNATURE, KEY_ID), {
+  t.throwsAsync(verifyRequestByKeyId("", SIGNATURE, KEY_ID), {
     name: "Error",
     message: "[@copilot-extensions/preview-sdk] Invalid payload",
   });
 
-  assert.rejects(verifyRequestByKeyId(1, SIGNATURE, KEY_ID), {
+  t.throwsAsync(verifyRequestByKeyId(1, SIGNATURE, KEY_ID), {
     name: "Error",
     message: "[@copilot-extensions/preview-sdk] Invalid payload",
   });
 
-  assert.rejects(verifyRequestByKeyId(undefined, SIGNATURE, KEY_ID), {
+  t.throwsAsync(verifyRequestByKeyId(undefined, SIGNATURE, KEY_ID), {
     name: "Error",
     message: "[@copilot-extensions/preview-sdk] Invalid payload",
   });
 
-  assert.rejects(verifyRequestByKeyId(RAW_BODY, "", KEY_ID), {
+  t.throwsAsync(verifyRequestByKeyId(RAW_BODY, "", KEY_ID), {
     name: "Error",
     message: "[@copilot-extensions/preview-sdk] Invalid signature",
   });
 
-  assert.rejects(verifyRequestByKeyId(RAW_BODY, 1, KEY_ID), {
+  t.throwsAsync(verifyRequestByKeyId(RAW_BODY, 1, KEY_ID), {
     name: "Error",
     message: "[@copilot-extensions/preview-sdk] Invalid signature",
   });
 
-  assert.rejects(verifyRequestByKeyId(RAW_BODY, undefined, KEY_ID), {
+  t.throwsAsync(verifyRequestByKeyId(RAW_BODY, undefined, KEY_ID), {
     name: "Error",
     message: "[@copilot-extensions/preview-sdk] Invalid signature",
   });
 
-  assert.rejects(verifyRequestByKeyId(RAW_BODY, SIGNATURE, ""), {
+  t.throwsAsync(verifyRequestByKeyId(RAW_BODY, SIGNATURE, ""), {
     name: "Error",
     message: "[@copilot-extensions/preview-sdk] Invalid keyId",
   });
 
-  assert.rejects(verifyRequestByKeyId(RAW_BODY, SIGNATURE, 1), {
+  t.throwsAsync(verifyRequestByKeyId(RAW_BODY, SIGNATURE, 1), {
     name: "Error",
     message: "[@copilot-extensions/preview-sdk] Invalid keyId",
   });
 
-  assert.rejects(verifyRequestByKeyId(RAW_BODY, SIGNATURE, undefined), {
+  t.throwsAsync(verifyRequestByKeyId(RAW_BODY, SIGNATURE, undefined), {
     name: "Error",
     message: "[@copilot-extensions/preview-sdk] Invalid keyId",
   });
@@ -125,12 +124,12 @@ test("verifyRequestByKeyId() - invalid arguments", (t) => {
 
 test("verifyRequest() - valid", async (t) => {
   const result = await verifyRequest(RAW_BODY, SIGNATURE, CURRENT_PUBLIC_KEY);
-  assert.deepEqual(result, true);
+  t.deepEqual(result, true);
 });
 
 test("verifyRequest() - invalid", async (t) => {
   const result = await verifyRequest(RAW_BODY, SIGNATURE, "invalid-key");
-  assert.deepEqual(result, false);
+  t.deepEqual(result, false);
 });
 
 test("fetchVerificationKeys()", async (t) => {
@@ -181,5 +180,5 @@ test("fetchVerificationKeys()", async (t) => {
     request: testRequest,
   });
 
-  assert.deepEqual(result, publicKeys);
+  t.deepEqual(result, publicKeys);
 });
