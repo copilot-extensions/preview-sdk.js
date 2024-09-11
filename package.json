@@ -26,8 +26,8 @@
   },
   "scripts": {
     "test": "npm run test:code && npm run test:tsc && npm run test:types",
-    "test:code": "node --test --experimental-test-coverage --experimental-test-snapshots",
-    "test:code:update-snapshots": "node --test --experimental-test-coverage --experimental-test-snapshots --test-update-snapshots",
+    "test:code": "ava",
+    "test:code:update-snapshots": "ava --update-snapshots",
     "test:tsc": "tsc --allowJs --noEmit --esModuleInterop --skipLibCheck --lib es2020 index.js",
     "test:types": "tsd",
     "lint": "prettier --check \"*.{js,json,ts,md}\" \".github/**/*.yml\" \"test/*.ts\"",
