@@ -431,38 +431,6 @@ test("Handles error", async (t) => {
       name: "PromptError",
       message:
         "[@copilot-extensions/preview-sdk] An error occured with the chat completions API",
-      // request: {
-      //   method: "POST",
-      //   url: "https://api.githubcopilot.com/chat/completions",
-      //   headers: {
-      //     "content-type": "application/json; charset=UTF-8",
-      //     "user-agent": "copilot-extensions/preview-sdk.js",
-      //     accept: "application/json",
-      //     authorization: "Bearer [REDACTED]",
-      //   },
-      //   body: {
-      //     messages: [
-      //       {
-      //         content: "You are a helpful assistant.",
-      //         role: "system",
-      //       },
-      //       {
-      //         content: "What is the capital of France?",
-      //         role: "user",
-      //       },
-      //     ],
-      //     model: "gpt-4o",
-      //     toolsChoice: undefined,
-      //   },
-      // },
-      // response: {
-      //   status: 400,
-      //   headers: [
-      //     ["content-type", "text/plain"],
-      //     ["x-request-id", "<request-id>"],
-      //   ],
-      //   body: "Bad Request",
-      // },
     },
   );
 });
