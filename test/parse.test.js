@@ -1,4 +1,4 @@
-import test from 'ava';
+import test from "ava";
 
 import { MockAgent } from "undici";
 import { request as defaultRequest } from "@octokit/request";
@@ -16,7 +16,6 @@ import {
   RAW_BODY,
   SIGNATURE,
 } from "./verification.test.js";
-
 
 test("parseRequestBody()", (t) => {
   // parseRequestBody() does not check for structure. We assume it adheres
@@ -88,10 +87,7 @@ test("verifyAndParseRequest()", async (t) => {
     request: testRequest,
   });
 
-  t.deepEqual(
-    { isValidRequest: true, payload: JSON.parse(RAW_BODY) },
-    result,
-  );
+  t.deepEqual({ isValidRequest: true, payload: JSON.parse(RAW_BODY) }, result);
 });
 
 test("getUserMessage()", (t) => {

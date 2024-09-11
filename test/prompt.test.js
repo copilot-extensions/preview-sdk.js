@@ -4,7 +4,6 @@ import { MockAgent } from "undici";
 
 import { prompt, getFunctionCalls } from "../index.js";
 
-
 test("smoke", (t) => {
   t.is(typeof prompt, "function");
 });
@@ -430,7 +429,8 @@ test("Handles error", async (t) => {
     },
     {
       name: "PromptError",
-      message: "[@copilot-extensions/preview-sdk] An error occured with the chat completions API",
+      message:
+        "[@copilot-extensions/preview-sdk] An error occured with the chat completions API",
       // request: {
       //   method: "POST",
       //   url: "https://api.githubcopilot.com/chat/completions",

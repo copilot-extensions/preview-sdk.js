@@ -168,7 +168,7 @@ export function transformPayloadForOpenAICompatibilityTest(
   expectType<{
     messages: {
       content: string;
-      role: 'system' | 'user' | 'assistant';
+      role: "system" | "user" | "assistant";
       name?: string;
       [key: string]: unknown;
     }[];

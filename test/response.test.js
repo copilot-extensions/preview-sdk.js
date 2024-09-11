@@ -9,7 +9,6 @@ import {
   createTextEvent,
 } from "../index.js";
 
-
 test("smoke", (t) => {
   t.is(typeof createAckEvent, "function");
 });
@@ -58,11 +57,7 @@ test("createErrorsEvent()", (t) => {
     message: "test agent error",
     identifier: "agent-identifier",
   };
-  const event = createErrorsEvent([
-    referenceError,
-    functionError,
-    agentError,
-  ]);
+  const event = createErrorsEvent([referenceError, functionError, agentError]);
   t.snapshot(event);
 });
 
