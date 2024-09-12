@@ -37,7 +37,13 @@ interface VerifyRequestByKeyIdInterface {
     signature: string,
     keyId: string,
     requestOptions?: RequestOptions,
-  ): Promise<{ isValid: boolean; cacheId: string }>;
+  ): Promise<{
+    isValid: boolean;
+    cache: {
+      id: string;
+      keys: VerificationPublicKey[];
+    };
+  }>;
 }
 
 // response types
