@@ -132,7 +132,7 @@ test("verifyRequest() - invalid", async (t) => {
   t.deepEqual(result, false);
 });
 
-test("fetchVerificationKeys()", async (t) => {
+test("fetchVerificationKeys() - without cache", async (t) => {
   const mockAgent = new MockAgent();
   function fetchMock(url, opts) {
     opts ||= {};
