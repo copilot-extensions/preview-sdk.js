@@ -67,7 +67,7 @@ test("verifyRequestByKeyId()", async (t) => {
     request: testRequest,
   });
 
-  t.deepEqual(result, true);
+  t.deepEqual(result, { isValid: true, cacheId: "" });
 });
 
 test("verifyRequestByKeyId() - invalid arguments", async (t) => {
@@ -180,5 +180,5 @@ test("fetchVerificationKeys()", async (t) => {
     request: testRequest,
   });
 
-  t.deepEqual(result, publicKeys);
+  t.deepEqual(result, { cacheId: "", keys: publicKeys });
 });
