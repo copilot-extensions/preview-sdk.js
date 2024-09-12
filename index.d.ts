@@ -29,7 +29,7 @@ interface FetchVerificationKeysInterface {
 }
 
 interface VerifyRequest {
-  (rawBody: string, signature: string, keyId: string): boolean;
+  (rawBody: string, signature: string, key: string): boolean;
 }
 
 interface VerifyRequestByKeyIdInterface {
