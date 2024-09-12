@@ -3,7 +3,7 @@ import { request } from "@octokit/request";
 // verification types
 
 type RequestInterface = typeof request;
-type VerificationKeysCache = {
+export type VerificationKeysCache = {
   id: string;
   keys: VerificationPublicKey[];
 };
@@ -25,7 +25,7 @@ interface VerifyRequestInterface {
 interface FetchVerificationKeysInterface {
   (
     requestOptions?: RequestOptions,
-  ): Promise<{ cacheId: string; keys: VerificationPublicKey[] }>;
+  ): Promise<VerificationKeysCache>;
 }
 
 interface VerifyRequest {

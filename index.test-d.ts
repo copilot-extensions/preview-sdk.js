@@ -22,6 +22,7 @@ import {
   prompt,
   PromptResult,
   getFunctionCalls,
+  VerificationKeysCache,
 } from "./index.js";
 
 const token = "";
@@ -76,7 +77,7 @@ export async function verifyRequestTest(
 
 export async function fetchVerificationKeysTest() {
   const result = await fetchVerificationKeys();
-  expectType<{ cacheId: string; keys: VerificationPublicKey[] }>(result);
+  expectType<VerificationKeysCache>(result);
 
   // accepts a token argument
   await fetchVerificationKeys({ token });

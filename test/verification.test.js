@@ -183,7 +183,7 @@ test("fetchVerificationKeys() - without cache", async (t) => {
     request: testRequest,
   });
 
-  t.deepEqual(result, { cacheId: "", keys: publicKeys });
+  t.deepEqual(result, { id: "", keys: publicKeys });
 });
 
 // Up next: test the cache
