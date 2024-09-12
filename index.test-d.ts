@@ -83,6 +83,9 @@ export async function fetchVerificationKeysTest() {
 
   // accepts a request argument
   await fetchVerificationKeys({ request });
+
+  // accepts a cache argument
+  await fetchVerificationKeys({ cache: { id: "test", keys: [] } });
 }
 
 export function createAckEventTest() {
