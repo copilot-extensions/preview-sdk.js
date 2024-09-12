@@ -185,5 +185,54 @@ test("fetchVerificationKeys() - without cache", async (t) => {
   t.deepEqual(result, { id: "", keys: publicKeys });
 });
 
-// Up next: test the cache
-// test("fetchVerificationKeys() - with cache", async (t) => { });
+test("fetchVerificationKeys() - with cache", async (t) => {
+  const mockAgent = new MockAgent();
+  function fetchMock(url, opts) {
+    opts ||= {};
+    opts.dispatcher = mockAgent;
+    return fetch(url, opts);
+  }
+
+  const publicKeys = [
+    {
+      key: "<key 1>",
+      key_identifier: "<key-id 1>",
+      is_current: true,
+    },
+    {
+      key: "<key 2>",
+      key_identifier: "<key-id 2>",
+      is_current: true,
+    },
+  ];
+
+  mockAgent.disableNetConnect();
+  const mockPool = mockAgent.get("https://api.github.com");
+  mockPool
+    .intercept({
+      method: "get",
+      path: `/meta/public_keys/copilot_api`,
+    })
+    .reply(
+      304,
+      {},
+      {
+        headers: {
+          "content-type": "application/json",
+          "x-request-id": "<request-id>",
+        },
+      },
+    );
+  const testRequest = defaultRequest.defaults({
+    request: { fetch: fetchMock },
+  });
+
+  const cache = { id: "etag-value", keys: publicKeys };
+
+  const result = await fetchVerificationKeys({
+    request: testRequest,
+    cache,
+  });
+
+  t.deepEqual(result, cache);
+});
