@@ -35,7 +35,7 @@ export async function verifyRequestByKeyIdTest(
   const result = await verifyRequestByKeyId(rawBody, signature, keyId);
   expectType<{
     isValid: boolean;
-    cache: { id: string; keys: VerificationPublicKey[] };
+    cache: VerificationKeysCache;
   }>(result);
 
   // @ts-expect-error - first 3 arguments are required
