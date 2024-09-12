@@ -53,7 +53,7 @@ test("verifyRequestByKeyId()", async (t) => {
     .reply(
       200,
       {
-        public_keys: publicKeys
+        public_keys: publicKeys,
       },
       {
         headers: {

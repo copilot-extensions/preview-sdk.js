@@ -23,9 +23,7 @@ interface VerifyRequestInterface {
 }
 
 interface FetchVerificationKeysInterface {
-  (
-    requestOptions?: RequestOptions,
-  ): Promise<VerificationKeysCache>;
+  (requestOptions?: RequestOptions): Promise<VerificationKeysCache>;
 }
 
 interface VerifyRequest {
