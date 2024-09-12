@@ -3,11 +3,10 @@ import { request } from "@octokit/request";
 // verification types
 
 type RequestInterface = typeof request;
-export type VerificationKeysCache = {
+type VerificationKeysCache = {
   id: string;
   keys: VerificationPublicKey[];
 };
-
 type RequestOptions = {
   request?: RequestInterface;
   token?: string;
