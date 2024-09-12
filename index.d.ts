@@ -9,7 +9,7 @@ type RequestOptions = {
   cache?: {
     id: string;
     keys: VerificationPublicKey[];
-  }
+  };
 };
 export type VerificationPublicKey = {
   key_identifier: string;
@@ -22,7 +22,9 @@ interface VerifyRequestInterface {
 }
 
 interface FetchVerificationKeysInterface {
-  (requestOptions?: RequestOptions): Promise<{ cacheId: string, keys: VerificationPublicKey[] }>;
+  (
+    requestOptions?: RequestOptions,
+  ): Promise<{ cacheId: string; keys: VerificationPublicKey[] }>;
 }
 
 interface VerifyRequest {
@@ -35,7 +37,7 @@ interface VerifyRequestByKeyIdInterface {
     signature: string,
     keyId: string,
     requestOptions?: RequestOptions,
-  ): Promise<{ isValid: boolean, cacheId: string }>;
+  ): Promise<{ isValid: boolean; cacheId: string }>;
 }
 
 // response types

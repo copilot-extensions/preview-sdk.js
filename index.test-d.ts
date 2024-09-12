@@ -32,7 +32,7 @@ export async function verifyRequestByKeyIdTest(
   keyId: string,
 ) {
   const result = await verifyRequestByKeyId(rawBody, signature, keyId);
-  expectType<{ isValid: boolean, cacheId: string }>(result);
+  expectType<{ isValid: boolean; cacheId: string }>(result);
 
   // @ts-expect-error - first 3 arguments are required
   verifyRequestByKeyId(rawBody, signature);
@@ -76,7 +76,7 @@ export async function verifyRequestTest(
 
 export async function fetchVerificationKeysTest() {
   const result = await fetchVerificationKeys();
-  expectType<{ cacheId: string, keys: VerificationPublicKey[] }>(result);
+  expectType<{ cacheId: string; keys: VerificationPublicKey[] }>(result);
 
   // accepts a token argument
   await fetchVerificationKeys({ token });
