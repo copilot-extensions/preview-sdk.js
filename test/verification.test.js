@@ -22,6 +22,14 @@ S0+XhEkTWUZEEznIVpS3rQseDTG6//gEWr4j9fY35+dGOxwOx3Z9mK3i7w==
 export const SIGNATURE =
   "MEYCIQC8aEmkYA/4EQrXEOi2OL9nfpbnrCxkMc6HrH7b6SogKgIhAIYBThcpzkCCswiV1+pOaPI+zFQF9ShG61puoKs9rJjq";
 
+const publicKeys = [
+  {
+    key: CURRENT_PUBLIC_KEY,
+    key_identifier: KEY_ID,
+    is_current: true,
+  },
+];
+
 test("smoke", (t) => {
   t.is(typeof verifyRequestByKeyId, "function");
 });
@@ -33,14 +41,6 @@ test("verifyRequestByKeyId()", async (t) => {
     opts.dispatcher = mockAgent;
     return fetch(url, opts);
   }
-
-  const publicKeys = [
-    {
-      key: CURRENT_PUBLIC_KEY,
-      key_identifier: KEY_ID,
-      is_current: true,
-    },
-  ];
 
   mockAgent.disableNetConnect();
   const mockPool = mockAgent.get("https://api.github.com");
@@ -142,19 +142,6 @@ test("fetchVerificationKeys() - without cache", async (t) => {
     return fetch(url, opts);
   }
 
-  const publicKeys = [
-    {
-      key: "<key 1>",
-      key_identifier: "<key-id 1>",
-      is_current: true,
-    },
-    {
-      key: "<key 2>",
-      key_identifier: "<key-id 2>",
-      is_current: true,
-    },
-  ];
-
   mockAgent.disableNetConnect();
   const mockPool = mockAgent.get("https://api.github.com");
   mockPool
@@ -192,19 +179,6 @@ test("fetchVerificationKeys() - with cache", async (t) => {
     opts.dispatcher = mockAgent;
     return fetch(url, opts);
   }
-
-  const publicKeys = [
-    {
-      key: "<key 1>",
-      key_identifier: "<key-id 1>",
-      is_current: true,
-    },
-    {
-      key: "<key 2>",
-      key_identifier: "<key-id 2>",
-      is_current: true,
-    },
-  ];
 
   mockAgent.disableNetConnect();
   const mockPool = mockAgent.get("https://api.github.com");
