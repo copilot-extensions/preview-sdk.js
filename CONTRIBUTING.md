@@ -1,6 +1,6 @@
 # Contributing
 
-Thank you for considering to contribute to `github-project` 💖
+Thank you for considering to contribute to `copilot-extensions/preview-sdk.js` 💖
 
 Please note that this project is released with a [Contributor Code of Conduct](./CODE_OF_CONDUCT.md).
 By participating you agree to abide by its terms.
@@ -18,7 +18,7 @@ By participating you agree to abide by its terms.
 
 - [Node.js](https://nodejs.org/) (v22.x)
 
-  We currently depend on Node 22+ for local development as we use new test APIs such as [snapshot testing](https://nodejs.org/api/test.html#snapshot-testing)! At some point we might move to a different test runner, but this works great to move fast in early aplha days.
+  We currently depend on Node 22+ for local development as we use new test APIs such as [snapshot testing](https://nodejs.org/api/test.html#snapshot-testing)! At some point we might move to a different test runner, but this works great to move fast in early alpha days.
 
 ### Setup
 

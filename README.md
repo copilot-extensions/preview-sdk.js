@@ -1,7 +1,5 @@
 # `@copilot-extensions/preview-sdk`
 
-> SDK for building GitHub Copilot Extensions
-
 This SDK simplifies the process of building GitHub Copilot Extensions. Building Copilot Extensions previously required manual handling of request verification, response formatting, and API interactions. This SDK simplifies these tasks, allowing you to focus on your extension's core functionality rather than building boilerplate code. Use it to integrate your tools, APIs, or data sources directly into Copilot Chat.
 
 We consider this SDK alpha software in terms of API stability, but we adhere to semantic-versioning, so it's safe to use today.
@@ -161,7 +159,7 @@ Ask the user to confirm an action. The `confirmation` event should only be sent 
 
 The `meta` data object will be sent along the user's response.
 
-See additional documentation about Copilot confirmations at https://github.com/github/copilot-partners/blob/main/docs/confirmations.md.
+See additional documentation about [Copilot confirmations](https://docs.github.com/en/copilot/building-copilot-extensions/building-a-copilot-agent-for-your-copilot-extension/configuring-your-copilot-agent-to-communicate-with-the-copilot-platform#copilot_confirmation).
 
 ```js
 import { createConfirmationEvent } from "@copilot-extensions/preview-sdk";
@@ -190,7 +188,7 @@ The following properties are optional
 
 Multiple `references` events can be sent.
 
-See additional documentation about Copilot references at https://github.com/github/copilot-partners/blob/main/docs/copilot-references.md.
+See additional documentation about [Copilot references](https://docs.github.com/en/copilot/building-copilot-extensions/building-a-copilot-agent-for-your-copilot-extension/configuring-your-copilot-agent-to-communicate-with-the-copilot-platform#copilot_references).
 
 ```js
 import { createReferencesEvent } from "@copilot-extensions/preview-sdk";
@@ -222,7 +220,7 @@ An array of objects with the following properties:
 - `message`
 - `identifier`
 
-See additional documentation about Copilot errors at https://github.com/github/copilot-partners/blob/main/docs/copilot-errors.md.
+See additional documentation about [Copilot errors](https://docs.github.com/en/copilot/building-copilot-extensions/building-a-copilot-agent-for-your-copilot-extension/configuring-your-copilot-agent-to-communicate-with-the-copilot-platform#copilot_errors).
 
 #### `createDoneEvent()`
 
@@ -291,7 +289,7 @@ if (!isValidRequest) {
 
 #### `getUserMessage()`
 
-Convencience method to get the user's message from the request payload.
+Convenience method to get the user's message from the request payload.
 
 ```js
 import { getUserMessage } from "@copilot-extensions/preview-sdk";
@@ -301,7 +299,7 @@ const userMessage = getUserMessage(payload);
 
 #### `getUserConfirmation()`
 
-Convencience method to get the user's confirmation from the request payload (in case the user's last response was a confirmation).
+Convenience method to get the user's confirmation from the request payload (in case the user's last response was a confirmation).
 
 ```js
 import { getUserConfirmation } from "@copilot-extensions/preview-sdk";
@@ -463,7 +461,7 @@ While implementing the lower-level functionality, we also dream big: what would 
 
 ## Contributing
 
-Please see [CONTRIBUTING.md](.github/CONTRIBUTING.md)
+Please see [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## License
 
