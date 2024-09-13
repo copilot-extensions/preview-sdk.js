@@ -5,7 +5,8 @@ If you find any issues or have any questions, please let us know by opening an i
 
 # Examples
 Here's an overview of the examples in this folder:
-- hello-world: A simple example that responds to all prompts with a message: "Hello, world!"
+- 1-hello-world: A simple example that responds to all prompts with a message: "Hello, world!"
+- 2-handle-prompt: An example that responds to prompts with a message: "Hello, world!" and then forwards the prompt to the Copilot API. The response from the Copilot API is then sent back to the user.
 
 ## Running the examples
 These examples are setup so that you can run them inside a GitHub Codespace. To do so, follow these steps:

@@ -1,7 +1,7 @@
 {
-  "name": "hello-world",
+  "name": "handle-prompt",
   "version": "0.0.1",
-  "description": "Hello world example",
+  "description": "Handle prompt example",
   "main": "index.js",
   "type": "module",
   "repository": {
