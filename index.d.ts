@@ -19,7 +19,7 @@ export type VerificationPublicKey = {
 };
 
 interface VerifyRequestInterface {
-  (rawBody: string, signature: string, key: string): boolean;
+  (rawBody: string, signature: string, key: string): Promise<boolean>;
 }
 
 interface FetchVerificationKeysInterface {
