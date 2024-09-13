@@ -1,13 +1,5 @@
 {
-  "name": "hello-world",
-  "version": "0.0.1",
-  "description": "Hello world example",
-  "main": "index.js",
-  "type": "module",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/copilot-extensions"
-  },
+  "private": true,
   "scripts": {
     "start": "node index.js",
     "watch": "node --watch index.js"
