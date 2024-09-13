@@ -6,7 +6,7 @@ import {
 } from "@copilot-extensions/preview-sdk";
 
 const server = createServer((request, ressponse) => {
-  console.log(`Received [${request.method}]`);
+  console.log(`Received [${request.method}] to [${request.url}]`);
   if (request.method === "GET") {
     return ressponse.end("ok");
   }
