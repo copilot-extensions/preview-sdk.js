@@ -1,0 +1,17 @@
+{
+  "name": "hello-world",
+  "version": "0.0.1",
+  "description": "Hello world example",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "watch": "node --watch index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@copilot-extensions/preview-sdk": "^4.0.3"
+  }
+}

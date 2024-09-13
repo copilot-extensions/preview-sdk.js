@@ -21,6 +21,7 @@
   "license": "MIT",
   "description": "JavaScript SDK for Copilot Extensions",
   "dependencies": {
+    "@copilot-extensions/preview-sdk": "^4.0.3",
     "@octokit/request": "^9.1.3",
     "@octokit/request-error": "^6.1.4"
   },
