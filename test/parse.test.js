@@ -15,6 +15,7 @@ import {
   KEY_ID,
   RAW_BODY,
   SIGNATURE,
+  publicKeys,
 } from "./verification.test.js";
 
 test("parseRequestBody()", (t) => {
@@ -87,7 +88,14 @@ test("verifyAndParseRequest()", async (t) => {
     request: testRequest,
   });
 
-  t.deepEqual({ isValidRequest: true, payload: JSON.parse(RAW_BODY) }, result);
+  t.deepEqual({
+    isValidRequest: true,
+    payload: JSON.parse(RAW_BODY),
+    cache: {
+      id: "",
+      keys: publicKeys,
+    },
+  }, result);
 });
 
 test("getUserMessage()", (t) => {

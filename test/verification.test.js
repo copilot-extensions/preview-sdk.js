@@ -22,7 +22,7 @@ S0+XhEkTWUZEEznIVpS3rQseDTG6//gEWr4j9fY35+dGOxwOx3Z9mK3i7w==
 export const SIGNATURE =
   "MEYCIQC8aEmkYA/4EQrXEOi2OL9nfpbnrCxkMc6HrH7b6SogKgIhAIYBThcpzkCCswiV1+pOaPI+zFQF9ShG61puoKs9rJjq";
 
-const publicKeys = [
+export const publicKeys = [
   {
     key: CURRENT_PUBLIC_KEY,
     key_identifier: KEY_ID,

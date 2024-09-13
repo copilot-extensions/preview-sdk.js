@@ -188,9 +188,11 @@ export async function verifyAndParseRequestTest(
   keyId: string,
 ) {
   const result = await verifyAndParseRequest(rawBody, signature, keyId);
-  expectType<{ isValidRequest: boolean; payload: CopilotRequestPayload }>(
-    result,
-  );
+  expectType<{
+    isValidRequest: boolean;
+    payload: CopilotRequestPayload;
+    cache: { id: string; keys: VerificationPublicKey[] };
+  }>(result);
 }
 
 export function getUserMessageTest(payload: CopilotRequestPayload) {

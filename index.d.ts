@@ -196,7 +196,11 @@ export interface VerifyAndParseRequestInterface {
     signature: string,
     keyID: string,
     requestOptions?: RequestOptions,
-  ): Promise<{ isValidRequest: boolean; payload: CopilotRequestPayload }>;
+  ): Promise<{
+    isValidRequest: boolean;
+    payload: CopilotRequestPayload;
+    cache: VerificationKeysCache;
+  }>;
 }
 
 export interface GetUserMessageInterface {
