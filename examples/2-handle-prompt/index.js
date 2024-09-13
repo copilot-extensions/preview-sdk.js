@@ -87,9 +87,7 @@ const handler = async (request, response) => {
 };
 
 // Create an HTTP server
-const server = http.createServer((req, res) => {
-    handler(req, res);
-});
+const server = http.createServer(handler);
 
 // Define the port to listen on
 const PORT = 3000;
