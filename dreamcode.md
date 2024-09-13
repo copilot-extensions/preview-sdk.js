@@ -200,7 +200,7 @@ const { isValidRequest, payload } = await copilotAgent.verifyAndParse(
 
 ## Notes
 
-Regarding the context passed to event handlers
+Regarding the context passed to event handlers:
 
 - `message` / `confirmation` / etc are objects as received by the user
 - `octokit` is a pre-authenticated octokit instance
@@ -211,6 +211,6 @@ Regarding the context passed to event handlers
 - `respond` is an API to send different types of responses to the user
 - `log` is the logger as we use it in Octokit. See https://github.com/octokit/core.js?tab=readme-ov-file#logging
 
-On how to receive the events (transport layer)
+On how to receive the events (transport layer):
 
 - `createNodeMiddleware` is something we have currently built into some of the Octokit SDKs, e.g. https://github.com/octokit/app.js?tab=readme-ov-file#createnodemiddlewareapp-options. However, I think we will move these out into separate packages, such as `@octokit/webhooks-middleware-node`, etc. But for now, we can just assume that we ship with it by default. We can also add other middlewares for Netlify/Vercel edge functions, lambda, etc.

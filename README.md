@@ -402,7 +402,7 @@ await prompt({
             unit: { type: "string", enum: ["c", "f"] },
           },
           required: ["location", "unit"],
-          additionalProperties: False,
+          additionalProperties: false,
         },
       },
     },
@@ -461,7 +461,7 @@ While implementing the lower-level functionality, we also dream big: what would 
 
 ## Contributing
 
-Please see [CONTRIBUTING.md](CONTRIBUTING.md)
+Please see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 
