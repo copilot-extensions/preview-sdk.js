@@ -5,6 +5,6 @@
     "watch": "node --watch index.js"
   },
   "dependencies": {
-    "@copilot-extensions/preview-sdk": "^4.0.3"
+    "@copilot-extensions/preview-sdk": "latest"
   }
 }
