@@ -1,11 +1,11 @@
 import http from 'http';
+import { Octokit } from "@octokit/rest";
 import { 
     createAckEvent, 
     createDoneEvent, 
     createTextEvent, 
     parseRequestBody, 
-    prompt, 
-    createConfirmationEvent
+    prompt
  } from "@copilot-extensions/preview-sdk";
 
 
@@ -16,11 +16,11 @@ const handler = async (request, response) => {
 
         // get a token to use
         const tokenForUser = request.headers['x-github-token'];
-        if (tokenForUser) {
-            console.log('Token length:', tokenForUser.length);
-        } else {
-            console.log('X-GitHub-Token header not found');
-        }
+        
+        // get the user information with the token        
+        const octokit = new Octokit({ auth: tokenForUser });
+        const user = await octokit.request("GET /user");
+        const userHandle = user.data.login
         
         // Collect incoming data chunks to use in the `on("end")` event
         let body = '';
@@ -36,14 +36,15 @@ const handler = async (request, response) => {
                 // header to indicate the state
                 response.writeHead(200, { 'Content-Type': 'application/json' });
                 // write the acknowledge event to let Copilot know we are handling the request
-                // this will also show the message "" in the chat
+                // this will also show the message "Copilot is responding" in the chat
                 response.write(createAckEvent());
 
                 // parse the incoming body as that has the information we need to handle the request / user prompt
                 const payload = parseRequestBody(body);
                 
                 // start writing text in the response
-                const textEvent = createTextEvent(`Hello GitHubber, \n\n`);
+                const textEvent = createTextEvent(`Hello ${userHandle}, \n\n`);
+                response.write(textEvent);
                 // add new lines to mark the difference between the fixed text and the dynamic text
                 response.write("\n\n");
                        

@@ -1,5 +1,6 @@
 {
   "private": true,
+  "type": "module",
   "scripts": {
     "start": "node index.js",
     "watch": "node --watch index.js"
