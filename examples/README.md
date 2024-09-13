@@ -21,7 +21,7 @@ npm install
 npm run start
 ```
 
-> [!IMPORTANT: Make your port public]  
+> [!IMPORTANT]  
 > By default, the examples will run on port 3000 and ports in Codespaces are private by default. If you want to access the examples from your browser, you'll need to make the port public. To do so, click on the "Ports" tab in the Codespace and right click, Go to "Port Visibility" next to port 3000 and set it to `public`. Do be aware that this will make the port accessible to anyone with the link to your Codespace. The port visibility setting is not saved when the Codespace is stopped, so you'll need to set it again if you restart the Codespace. The url does stay the same as long as the Codespace is not deleted.
 
 > [!TIP: Make your port public]  
