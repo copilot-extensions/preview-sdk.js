@@ -1,20 +1,10 @@
 {
-  "name": "handle-prompt",
-  "version": "0.0.1",
-  "description": "Handle prompt example",
-  "main": "index.js",
-  "type": "module",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/copilot-extensions"
-  },
+  "private": true,
   "scripts": {
     "start": "node index.js",
     "watch": "node --watch index.js"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "@copilot-extensions/preview-sdk": "^4.0.3"
+    "@copilot-extensions/preview-sdk": "latest"
   }
 }
