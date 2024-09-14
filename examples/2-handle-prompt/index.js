@@ -70,9 +70,6 @@ const handler = async (request, response) => {
             response.write(textEvent);
             // add new lines to mark the difference between the fixed text and the dynamic text
             response.write("\n\n");
-                    
-            // add a first system prompt for the payload.messages to add instructions
-            payload.messages.unshift({ role: "system", content: "You are a helpful assistant." });	
 
             // get an authentication token to use
             const tokenForUser = request.headers['x-github-token'];
