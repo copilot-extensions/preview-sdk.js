@@ -5,7 +5,8 @@ import {
     createDoneEvent, 
     createTextEvent, 
     parseRequestBody, 
-    prompt
+    prompt,
+    verifyRequestByKeyId
  } from "@copilot-extensions/preview-sdk";
 
 
@@ -38,7 +39,23 @@ const handler = async (request, response) => {
 
     // Parse the collected data once the request ends
     request.on('end', async () => {
-        try {                
+        try {
+            const payloadIsVerified = await verifyRequestByKeyId(
+                request.body,
+                signature,
+                keyId,
+                {
+                  token: process.env.GITHUB_TOKEN,
+                },
+            );
+
+            if (!payloadIsVerified) {
+                console.error('Request verification failed');
+                response.writeHead(401, { 'Content-Type': 'text/plain' });
+                response.end('Request could not be verified');
+                return;
+            }
+
             // start sending the response back to Copilot
             console.log('Handling response');
             // write the acknowledge event to let Copilot know we are handling the request
