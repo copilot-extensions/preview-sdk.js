@@ -77,24 +77,46 @@ try {
 
 Verify the request payload using the provided signature and key ID. The method will request the public key from GitHub's API for the given keyId and then verify the payload.
 
-The `options` argument is optional. It can contain a `token` to authenticate the request to GitHub's API, or a custom `request` instance to use for the request.
+The [`requestOptions`] argument is optional. It can contain:
+
+- a `token` to authenticate the request to GitHub's API
+- a custom `request` instance to use for the request
+- a `cache` to use cached keys
 
 ```js
 import { verifyRequestByKeyId } from "@copilot-extensions/preview-sdk";
 
-const payloadIsVerified = await verifyRequestByKeyId(
+const { isValid, cache } = await verifyRequestByKeyId(
   request.body,
   signature,
-  key,
+  keyId,
 );
 
 // with token
-await verifyRequestByKeyId(request.body, signature, key, { token: "ghp_1234" });
+const { isValid, cache } = await verifyRequestByKeyId(
+  request.body,
+  signature,
+  keyId,
+  { token: "ghp_1234" }
+);
 
 // with custom octokit request instance
-await verifyRequestByKeyId(request.body, signature, key, { request });
-```
+const { isValid, cache } = await verifyRequestByKeyId(
+  request.body,
+  signature,
+  keyId,
+  { request }
+);
 
+// with cache
+const cache = { id: "etag_value", keys: [{ key_identifier: "key1", key: "public_key1" }] };
+const { isValid, cache } = await verifyRequestByKeyId(
+  request.body,
+  signature,
+  keyId,
+  { cache }
+);
+```
 #### `async fetchVerificationKeys(options)`
 
 Fetches public keys for verifying copilot extension requests [from GitHub's API](https://api.github.com/meta/public_keys/copilot_api)
