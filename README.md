@@ -280,10 +280,13 @@ Convenience method to verify and parse a request in one go. It calls [`verifyReq
 ```js
 import { verifyAndParseRequest } from "@copilot-extensions/preview-sdk";
 
-const { isValidRequest, payload } = await verifyAndParseRequest(
-  request,
+const { isValidRequest, payload, cache } = await verifyAndParseRequest(
+  request.body,
   signature,
-  key,
+  keyId,
+  {
+    token: process.env.GITHUB_TOKEN,
+  }
 );
 
 if (!isValidRequest) {
@@ -291,6 +294,7 @@ if (!isValidRequest) {
 }
 
 // `payload` has type support.
+// `cache` contains the id and keys used for verification.
 ```
 
 #### `getUserMessage()`
