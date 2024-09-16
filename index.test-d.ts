@@ -55,6 +55,11 @@ export async function verifyRequestByKeyIdTest(
 
   // accepts a request argument
   await verifyRequestByKeyId(rawBody, signature, keyId, { request });
+
+  // accepts a cache argument
+  await verifyRequestByKeyId(rawBody, signature, keyId, {
+    cache: { id: "test", keys: [] },
+  });
 }
 
 export async function verifyRequestTest(
