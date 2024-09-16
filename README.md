@@ -109,12 +109,12 @@ const { isValid, cache } = await verifyRequestByKeyId(
 );
 
 // with cache
-const cache = { id: "etag_value", keys: [{ key_identifier: "key1", key: "public_key1" }] };
+const previousCache = { id: "etag_value", keys: [{ key_identifier: "key1", key: "public_key1", is_current: true }] };
 const { isValid, cache } = await verifyRequestByKeyId(
   request.body,
   signature,
   keyId,
-  { cache }
+  { cache: previousCache }
 );
 ```
 
