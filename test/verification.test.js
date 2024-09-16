@@ -201,7 +201,7 @@ test("fetchVerificationKeys() - returns cached keys on 304 response", async (t) 
     request: { fetch: fetchMock },
   });
 
-  const cache = { id: "etag-value", keys: publicKeys };
+  const cache = { id: 'W/"db60f89fb432b6c2362ac024c9322df5e6e2a8326595f7c1d35f807767d66e85"', keys: publicKeys };
 
   const result = await fetchVerificationKeys({
     request: testRequest,
@@ -236,7 +236,7 @@ test("fetchVerificationKeys() - populates and utilizes cache correctly", async (
       {
         headers: {
           "content-type": "application/json",
-          "etag": "etag-value",
+          "etag": 'W/"db60f89fb432b6c2362ac024c9322df5e6e2a8326595f7c1d35f807767d66e85"',
           "x-request-id": "<request-id>",
         },
       },
@@ -251,7 +251,7 @@ test("fetchVerificationKeys() - populates and utilizes cache correctly", async (
     request: testRequest,
   });
 
-  const expectedCache = { id: "etag-value", keys: publicKeys };
+  const expectedCache = { id: 'W/"db60f89fb432b6c2362ac024c9322df5e6e2a8326595f7c1d35f807767d66e85"', keys: publicKeys };
   t.deepEqual(firstResult, expectedCache);
 
   // Second request: respond with 304
