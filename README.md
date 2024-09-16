@@ -23,7 +23,7 @@ We consider this SDK alpha software in terms of API stability, but we adhere to 
 ```js
 import { verifyRequestByKeyId } from "@copilot-extensions/preview-sdk";
 
-const payloadIsVerified = await verifyRequestByKeyId(
+const { isValid, cache } = await verifyRequestByKeyId(
   request.body,
   signature,
   keyId,
@@ -31,7 +31,8 @@ const payloadIsVerified = await verifyRequestByKeyId(
     token: process.env.GITHUB_TOKEN,
   },
 );
-// true or false
+// isValid: true or false
+// cache: { id, keys }
 ```
 
 ### Build a response
