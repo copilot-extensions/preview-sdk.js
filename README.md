@@ -119,8 +119,7 @@ const { isValid, cache } = await verifyRequestByKeyId(
 ```
 #### `async fetchVerificationKeys(options)`
 
-Fetches public keys for verifying copilot extension requests [from GitHub's API](https://api.github.com/meta/public_keys/copilot_api)
-and returns them as an array. The request can be made without authentication, with a token, with a custom [octokit request](https://github.com/octokit/request.js) instance, or with a cache.
+Fetches public keys for verifying copilot extension requests [from GitHub's API](https://api.github.com/meta/public_keys/copilot_api) and returns them as an array. The request can be made without authentication, with a token, with a custom [octokit request](https://github.com/octokit/request.js) instance, or with a cache.
 
 ```js
 import { fetchVerificationKeys } from "@copilot-extensions/preview-sdk";
