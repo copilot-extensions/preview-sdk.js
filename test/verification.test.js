@@ -172,7 +172,7 @@ test("fetchVerificationKeys() - without cache", async (t) => {
   t.deepEqual(result, { id: "", keys: publicKeys });
 });
 
-test("fetchVerificationKeys() - with cache", async (t) => {
+test("fetchVerificationKeys() - returns cached keys on 304 response", async (t) => {
   const mockAgent = new MockAgent();
   function fetchMock(url, opts) {
     opts ||= {};
@@ -209,4 +209,73 @@ test("fetchVerificationKeys() - with cache", async (t) => {
   });
 
   t.deepEqual(result, cache);
+});
+
+test("fetchVerificationKeys() - populates and utilizes cache correctly", async (t) => {
+  const mockAgent = new MockAgent();
+  function fetchMock(url, opts) {
+    opts ||= {};
+    opts.dispatcher = mockAgent;
+    return fetch(url, opts);
+  }
+
+  mockAgent.disableNetConnect();
+  const mockPool = mockAgent.get("https://api.github.com");
+
+  // First request: respond with 200 and etag header
+  mockPool
+    .intercept({
+      method: "get",
+      path: `/meta/public_keys/copilot_api`,
+    })
+    .reply(
+      200,
+      {
+        public_keys: publicKeys,
+      },
+      {
+        headers: {
+          "content-type": "application/json",
+          "etag": "etag-value",
+          "x-request-id": "<request-id>",
+        },
+      },
+    );
+
+  const testRequest = defaultRequest.defaults({
+    request: { fetch: fetchMock },
+  });
+
+  // First call to fetchVerificationKeys to populate the cache
+  const firstResult = await fetchVerificationKeys({
+    request: testRequest,
+  });
+
+  const expectedCache = { id: "etag-value", keys: publicKeys };
+  t.deepEqual(firstResult, expectedCache);
+
+  // Second request: respond with 304
+  mockPool
+    .intercept({
+      method: "get",
+      path: `/meta/public_keys/copilot_api`,
+    })
+    .reply(
+      304,
+      {},
+      {
+        headers: {
+          "content-type": "application/json",
+          "x-request-id": "<request-id>",
+        },
+      },
+    );
+
+  // Second call to fetchVerificationKeys with cache
+  const secondResult = await fetchVerificationKeys({
+    request: testRequest,
+    cache: expectedCache,
+  });
+
+  t.deepEqual(secondResult, expectedCache);
 });
