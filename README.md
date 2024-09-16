@@ -137,7 +137,6 @@ const { id, keys } = await fetchVerificationKeys({ request });
 const cache = { id: "etag_value", keys: [{ key_identifier: "key1", key: "public_key1" }] };
 const { id, keys } = await fetchVerificationKeys({ cache });
 ```
-````
 
 #### `async verifyRequestPayload(rawBody, signature, keyId)`
 
