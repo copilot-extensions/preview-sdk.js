@@ -98,20 +98,25 @@ await verifyRequestByKeyId(request.body, signature, key, { request });
 #### `async fetchVerificationKeys(options)`
 
 Fetches public keys for verifying copilot extension requests [from GitHub's API](https://api.github.com/meta/public_keys/copilot_api)
-and returns them as an array. The request can be made without authentication, with a token, or with a custom [octokit request](https://github.com/octokit/request.js) instance.
+and returns them as an array. The request can be made without authentication, with a token, with a custom [octokit request](https://github.com/octokit/request.js) instance, or with a cache.
 
 ```js
 import { fetchVerificationKeys } from "@copilot-extensions/preview-sdk";
 
 // fetch without authentication
-const [current] = await fetchVerificationKeys();
+const { id, keys } = await fetchVerificationKeys();
 
 // with token
-const [current] = await fetchVerificationKeys({ token: "ghp_1234" });
+const { id, keys } = await fetchVerificationKeys({ token: "ghp_1234" });
 
 // with custom octokit request instance
-const [current] = await fetchVerificationKeys({ request });)
+const { id, keys } = await fetchVerificationKeys({ request });
+
+// with cache
+const cache = { id: "etag_value", keys: [{ key_identifier: "key1", key: "public_key1" }] };
+const { id, keys } = await fetchVerificationKeys({ cache });
 ```
+````
 
 #### `async verifyRequestPayload(rawBody, signature, keyId)`
 
