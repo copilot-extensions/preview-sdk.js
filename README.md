@@ -314,6 +314,7 @@ if (!isValidRequest) {
   throw new Error("Request could not be verified");
 }
 
+// `isValidRequest` is a boolean.
 // `payload` has type support.
 // `cache` contains the id and keys used for verification.
 ```
