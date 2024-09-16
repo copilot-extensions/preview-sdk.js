@@ -77,7 +77,7 @@ try {
 
 Verify the request payload using the provided signature and key ID. The method will request the public key from GitHub's API for the given keyId and then verify the payload.
 
-The [`requestOptions`] argument is optional. It can contain:
+The `requestOptions` argument is optional. It can contain:
 
 - a `token` to authenticate the request to GitHub's API
 - a custom `request` instance to use for the request
