@@ -80,7 +80,7 @@ Verify the request payload using the provided signature and key ID. The method w
 The `requestOptions` argument is optional. It can contain:
 
 - a `token` to authenticate the request to GitHub's API
-- a custom `request` instance to use for the request
+- a custom [octokit `request`](https://github.com/octokit/request.js) instance to use for the request
 - a `cache` to use cached keys
 
 ```js
@@ -139,14 +139,14 @@ const cache = { id: "etag_value", keys: [{ key_identifier: "key1", key: "public_
 const { id, keys } = await fetchVerificationKeys({ cache });
 ```
 
-#### `async verifyRequestPayload(rawBody, signature, keyId)`
+#### `async verifyRequest(rawBody, signature, keyId)`
 
 Verify the request payload using the provided signature and key. Note that the raw body as received by GitHub must be passed, before any parsing.
 
 ```js
 import { verify } from "@copilot-extensions/preview-sdk";
 
-const payloadIsVerified = await verifyRequestPayload(
+const payloadIsVerified = await verifyRequest(
   request.body,
   signature,
   key,
