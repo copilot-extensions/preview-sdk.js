@@ -77,7 +77,7 @@ test("verifyAndParseRequest()", async (t) => {
           "content-type": "application/json",
           "x-request-id": "<request-id>",
         },
-      },
+      }
     );
   const testRequest = defaultRequest.defaults({
     request: { fetch: fetchMock },
@@ -132,6 +132,21 @@ test("getUserConfirmation()", (t) => {
       id: "some-confirmation-id",
       metadata: { someConfirmationMetadata: "value" },
     },
-    result,
+    result
   );
+});
+
+test("getUserConfirmation() with no copilot confirmations", (t) => {
+  const payload = {
+    messages: [
+      {
+        content: "Some previous message",
+      },
+      {
+        content: "Hello, world!",
+      },
+    ],
+  };
+  const result = getUserConfirmation(payload);
+  t.deepEqual(undefined, result);
 });
