@@ -40,7 +40,7 @@ const handler = async (request, response) => {
   request.on("end", async () => {
     try {
       const payloadIsVerified = await verifyRequestByKeyId(
-        request.body,
+        body,
         signature,
         keyId,
         {
