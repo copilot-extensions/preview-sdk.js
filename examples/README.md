@@ -1,17 +1,16 @@
+# Examples
+
 This folder contains examples to show how you can use the Copilot Agent SDK in your own projects.
-Keep in mind that the SDK is in preview, so things might be changed already!
 
 If you find any issues or have any questions, please let us know by opening an issue, pull requests welcome (please read the (contribution guidelines)[../CONTRIBUTING.md] first).
 
-# Examples
-Here's an overview of the examples in this folder:
-- 1-hello-world: A simple example that responds to all prompts with a message: "Hello, world!"
-- 2-handle-prompt: An example that responds to prompts with a message: "Hello, world!" and then forwards the prompt to the Copilot API. The response from the Copilot API is then sent back to the user.
-
 ## Running the examples
+
 These examples are setup so that you can run them inside a GitHub Codespace. To do so, follow these steps:
+
 1. Open the GitHub Codespace by clicking the "Code" button in the top right of the repository and selecting "Open with Codespaces".
 2. Once the Codespace is open, you can run the examples by running the following command in the terminal:
+
 ```sh
 # go to the correct folder
 cd examples/<example-name>
