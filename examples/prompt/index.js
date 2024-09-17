@@ -12,6 +12,8 @@ const PORT = 3000;
 
 // Define the handler function
 async function handler(request, response) {
+  console.log(`Received [${request.method}] to [${request.url}]`);
+
   if (request.method !== "POST") {
     // Handle other request methods if necessary
     response.writeHead(405, { "Content-Type": "text/plain" });
@@ -20,8 +22,6 @@ async function handler(request, response) {
     response.end("Method Not Allowed");
     return;
   }
-
-  console.log("Received POST request");
 
   // get a token to use
   const tokenForUser = request.headers["x-github-token"];

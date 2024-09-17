@@ -7,6 +7,7 @@ import {
 
 const server = createServer((request, ressponse) => {
   console.log(`Received [${request.method}] to [${request.url}]`);
+
   if (request.method === "GET") {
     return ressponse.end("ok");
   }

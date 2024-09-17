@@ -6,7 +6,7 @@
     "watch": "node --watch index.js"
   },
   "dependencies": {
-    "@copilot-extensions/preview-sdk": "latest",
+    "@copilot-extensions/preview-sdk": "../../",
     "octokit": "^4.0.2"
   }
 }
