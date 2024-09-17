@@ -8,4 +8,4 @@ Important security fixes will be back-ported to at least the two most recent ver
 
 This repository uses GitHub's [private vulnerability reporting](https://docs.github.com/en/code-security/security-advisories/guidance-on-reporting-and-writing-information-about-vulnerabilities/privately-reporting-a-security-vulnerability) feature.
 
-Please follow [this guide](https://docs.github.com/en/code-security/security-advisories/guidance-on-reporting-and-writing-information-about-vulnerabilities/privately-reporting-a-security-vulnerability#privately-reporting-a-security-vulnerability) to submit a vulnerability report.
+You can submit a vulnerability report at https://github.com/copilot-extensions/preview-sdk.js/security/advisories/new.
