@@ -60,10 +60,8 @@ const handler = async (request, response) => {
     const payload = parseRequestBody(body);
 
     // start writing text in the response
-    const textEvent = createTextEvent(`Hello ${userHandle}, \n\n`);
+    const textEvent = createTextEvent(`Hello ${userHandle}`);
     response.write(textEvent);
-    // add new lines to mark the difference between the fixed text and the dynamic text
-    response.write("\n\n");
 
     // get an authentication token to use
     const tokenForUser = request.headers["x-github-token"];
