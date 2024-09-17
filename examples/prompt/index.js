@@ -17,6 +17,7 @@ const handler = async (request, response) => {
     console.log(`Method ${request.method} not allowed`);
 
     response.end("Method Not Allowed");
+    return;
   }
 
   console.log("Received POST request");
