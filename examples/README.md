@@ -2,7 +2,7 @@
 
 This folder contains examples to show how you can use the Copilot Agent SDK in your own projects.
 
-If you find any issues or have any questions, please let us know by opening an issue, pull requests welcome (please read the (contribution guidelines)[../CONTRIBUTING.md] first).
+If you find any issues or have any questions, please let us know by opening an issue, pull requests welcome (please read the [contribution guidelines](../CONTRIBUTING.md) first).
 
 ## Running the examples
 
