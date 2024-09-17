@@ -5,15 +5,15 @@ import {
   createDoneEvent,
 } from "@copilot-extensions/preview-sdk";
 
-const server = createServer((request, ressponse) => {
+const server = createServer((request, response) => {
   console.log(`Received [${request.method}] to [${request.url}]`);
 
   if (request.method === "GET") {
-    return ressponse.end("ok");
+    return response.end("ok");
   }
 
-  ressponse.write(createTextEvent("Hello, world!"));
-  ressponse.end(createDoneEvent());
+  response.write(createTextEvent("Hello, Francis Fuzz!"));
+  response.end(createDoneEvent());
 });
 
 const PORT = process.env.PORT || 3000;
