@@ -1,16 +1,17 @@
 import { createServer } from "node:http";
-import { Octokit } from "@octokit";
+import { Octokit } from "octokit";
 import {
   createAckEvent,
   createDoneEvent,
-  createTextEvent,
-  parseRequestBody,
   prompt,
-  verifyRequestByKeyId,
+  verifyAndParseRequest,
 } from "@copilot-extensions/preview-sdk";
 
+// Define the port to listen on
+const PORT = 3000;
+
 // Define the handler function
-const handler = async (request, response) => {
+async function handler(request, response) {
   if (request.method !== "POST") {
     // Handle other request methods if necessary
     response.writeHead(405, { "Content-Type": "text/plain" });
@@ -28,56 +29,46 @@ const handler = async (request, response) => {
   // get the user information with the token
   const octokit = new Octokit({ auth: tokenForUser });
   const user = await octokit.request("GET /user");
-  const userHandle = user.data.login;
 
   // Collect incoming data chunks to use in the `on("end")` event
-  let body = await getBody(request);
+  const body = await getBody(request);
+  const signature = String(request.headers["github-public-key-signature"]);
+  const keyID = String(request.headers["github-public-key-identifier"]);
 
   try {
-    const payloadIsVerified = await verifyRequestByKeyId(
+    const { isValidRequest, payload } = await verifyAndParseRequest(
       body,
       signature,
-      keyId,
+      keyID,
       {
-        token: process.env.GITHUB_TOKEN,
+        token: tokenForUser,
       },
     );
 
-    if (!payloadIsVerified) {
+    if (!isValidRequest) {
       console.error("Request verification failed");
       response.writeHead(401, { "Content-Type": "text/plain" });
       response.end("Request could not be verified");
       return;
     }
 
-    // start sending the response back to Copilot
-    console.log("Handling response");
     // write the acknowledge event to let Copilot know we are handling the request
     // this will also show the message "Copilot is responding" in the chat
     response.write(createAckEvent());
 
-    // parse the incoming body as that has the information we need to handle the request / user prompt
-    const payload = parseRequestBody(body);
-
-    // start writing text in the response
-    const textEvent = createTextEvent(`Hello ${userHandle}`);
-    response.write(textEvent);
-
-    // get an authentication token to use
-    const tokenForUser = request.headers["x-github-token"];
-
     console.log("Calling the GitHub Copilot API with the user prompt");
     // the prompt to forward to the Copilot API is the last message in the payload
     const payload_message = payload.messages[payload.messages.length - 1];
-    const result = await prompt(payload_message.content, {
-      system: "you talk like a pirate", // extra instructions for the prompt, the "you are a helpful assistant" is already set in the SDK
-      messages: payload.messages, // we are giving the prompt the existing messages in this chat conversation
+    const { stream } = await prompt.stream(payload_message.content, {
+      system: `You are a helpful assistant that replies to user messages as if you were the Blackbeard Pirate. Start every response with the user's name, which is @${user.data.login}`, // extra instructions for the prompt
+      messages: payload.messages, // we are giving the prompt the existing messages in this chat conversation for context
       token: tokenForUser,
     });
 
-    // write the prompt response back to Copilot
-    // note that this is only send when the entire response from the Copilot API is ready
-    response.write(createTextEvent(result.message.content));
+    // stream the prompt response back to Copilot
+    for await (const chunk of stream) {
+      response.write(new TextDecoder().decode(chunk));
+    }
 
     // write the done event to let Copilot know we are done handling the request
     response.end(createDoneEvent());
@@ -87,18 +78,14 @@ const handler = async (request, response) => {
     response.writeHead(500, { "Content-Type": "text/plain" });
     response.end("Internal Server Error");
   }
-};
+}
 
 // Create an HTTP server
 const server = createServer(handler);
 
-// Define the port to listen on
-const PORT = 3000;
-
 // Start the server
-server.listen(PORT, () => {
-  console.log(`Server is listening on port ${PORT}`);
-});
+server.listen(PORT);
+console.log(`Server started at http://localhost:${PORT}`);
 
 /**
  *
