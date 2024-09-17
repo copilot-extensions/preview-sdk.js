@@ -2,7 +2,7 @@
 
 ## Supported Versions
 
-Currently, this SDK's releases are automated using [semantic-release](https://github.com/semantic-release/semantic-release) and thus, all releases are in scope.
+Important security fixes will be back-ported to at least the two most recent versions.
 
 ## Reporting a Vulnerability
 
