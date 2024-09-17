@@ -7,6 +7,6 @@
   },
   "dependencies": {
     "@copilot-extensions/preview-sdk": "latest",
-    "@octokit": "latest"
+    "@octokit": "^4.0.2"
   }
 }
