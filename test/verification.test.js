@@ -59,7 +59,7 @@ test("verifyRequestByKeyId()", async (t) => {
           "content-type": "application/json",
           "x-request-id": "<request-id>",
         },
-      }
+      },
     );
   const testRequest = defaultRequest.defaults({
     request: { fetch: fetchMock },
@@ -103,7 +103,7 @@ test("verifyRequestByKeyId() - throws if keyId not present in verification keys 
           "content-type": "application/json",
           "x-request-id": "<request-id>",
         },
-      }
+      },
     );
   const testRequest = defaultRequest.defaults({
     request: { fetch: fetchMock },
@@ -117,7 +117,7 @@ test("verifyRequestByKeyId() - throws if keyId not present in verification keys 
       name: "Error",
       message:
         "[@copilot-extensions/preview-sdk] No public key found matching key identifier",
-    }
+    },
   );
 });
 
@@ -208,7 +208,7 @@ test("fetchVerificationKeys() - without cache", async (t) => {
           "content-type": "application/json",
           "x-request-id": "<request-id>",
         },
-      }
+      },
     );
   const testRequest = defaultRequest.defaults({
     request: { fetch: fetchMock },
@@ -250,7 +250,10 @@ test("fetchVerificationKeys() - returns cached keys on 304 response", async (t) 
     request: { fetch: fetchMock },
   });
 
-  const cache = { id: 'W/"db60f89fb432b6c2362ac024c9322df5e6e2a8326595f7c1d35f807767d66e85"', keys: publicKeys };
+  const cache = {
+    id: 'W/"db60f89fb432b6c2362ac024c9322df5e6e2a8326595f7c1d35f807767d66e85"',
+    keys: publicKeys,
+  };
 
   const result = await fetchVerificationKeys({
     request: testRequest,
@@ -285,7 +288,7 @@ test("fetchVerificationKeys() - populates and utilizes cache correctly", async (
       {
         headers: {
           "content-type": "application/json",
-          "etag": 'W/"db60f89fb432b6c2362ac024c9322df5e6e2a8326595f7c1d35f807767d66e85"',
+          etag: 'W/"db60f89fb432b6c2362ac024c9322df5e6e2a8326595f7c1d35f807767d66e85"',
           "x-request-id": "<request-id>",
         },
       },
@@ -300,7 +303,10 @@ test("fetchVerificationKeys() - populates and utilizes cache correctly", async (
     request: testRequest,
   });
 
-  const expectedCache = { id: 'W/"db60f89fb432b6c2362ac024c9322df5e6e2a8326595f7c1d35f807767d66e85"', keys: publicKeys };
+  const expectedCache = {
+    id: 'W/"db60f89fb432b6c2362ac024c9322df5e6e2a8326595f7c1d35f807767d66e85"',
+    keys: publicKeys,
+  };
   t.deepEqual(firstResult, expectedCache);
 
   // Second request: respond with 304
@@ -370,8 +376,9 @@ test("fetchVerificationKeys() - with token", async (t) => {
         headers: {
           "content-type": "application/json",
           "x-request-id": "<request-id>",
+          etag: 'W/"123"',
         },
-      }
+      },
     );
   const testRequest = defaultRequest.defaults({
     request: { fetch: fetchMock },
@@ -382,5 +389,19 @@ test("fetchVerificationKeys() - with token", async (t) => {
     request: testRequest,
   });
 
-  t.deepEqual(result, publicKeys);
+  t.deepEqual(result, {
+    id: 'W/"123"',
+    keys: [
+      {
+        is_current: true,
+        key: "<key 1>",
+        key_identifier: "<key-id 1>",
+      },
+      {
+        is_current: true,
+        key: "<key 2>",
+        key_identifier: "<key-id 2>",
+      },
+    ],
+  });
 });
