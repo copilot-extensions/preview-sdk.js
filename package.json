@@ -30,8 +30,8 @@
     "test:code:update-snapshots": "ava --update-snapshots",
     "test:tsc": "tsc --allowJs --noEmit --esModuleInterop --skipLibCheck --lib es2020 index.js",
     "test:types": "tsd",
-    "lint": "prettier --check \"*.{js,json,ts,md}\" \".github/**/*.yml\" \"test/*.ts\"",
-    "lint:fix": "prettier --write \"*.{js,json,ts,md}\" \".github/**/*.yml\" \"test/*.js\"",
+    "lint": "prettier --check \"**/*.{js,json,ts,md}\" \".github/**/*.yml\"",
+    "lint:fix": "prettier --write \"**/*.{js,json,ts,md}\" \".github/**/*.yml\"",
     "coverage": "c8 report --reporter html",
     "postcoverage": "open-cli coverage/index.html"
   },
