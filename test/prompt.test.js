@@ -489,3 +489,49 @@ test("parsePromptArguments - uses Node fetch if no options.fetch passed as argum
 
   t.deepEqual(fetch, parsedFetch);
 });
+
+test("prompt.stream", async (t) => {
+  const mockAgent = new MockAgent();
+  function fetchMock(url, opts) {
+    opts ||= {};
+    opts.dispatcher = mockAgent;
+    return fetch(url, opts);
+  }
+
+  mockAgent.disableNetConnect();
+  const mockPool = mockAgent.get("https://api.githubcopilot.com");
+  mockPool
+    .intercept({
+      method: "post",
+      path: `/chat/completions`,
+    })
+    .reply(200, "<response text>", {
+      headers: {
+        "content-type": "text/plain",
+        "x-request-id": "<request-id>",
+      },
+    });
+
+  const { requestId, stream } = await prompt.stream(
+    "What is the capital of France?",
+    {
+      token: "secret",
+      request: {
+        fetch: fetchMock,
+      },
+    }
+  );
+
+  t.is(requestId, "<request-id>");
+
+  let data = "";
+  const reader = stream.getReader();
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    data += new TextDecoder().decode(value);
+  }
+
+  t.deepEqual(data, "<response text>");
+});
