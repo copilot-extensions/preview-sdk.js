@@ -3,9 +3,14 @@ import { request } from "@octokit/request";
 // verification types
 
 type RequestInterface = typeof request;
+export type VerificationKeysCache = {
+  id: string;
+  keys: VerificationPublicKey[];
+};
 type RequestOptions = {
   request?: RequestInterface;
   token?: string;
+  cache?: VerificationKeysCache;
 };
 export type VerificationPublicKey = {
   key_identifier: string;
@@ -18,7 +23,7 @@ interface VerifyRequestInterface {
 }
 
 interface FetchVerificationKeysInterface {
-  (requestOptions?: RequestOptions): Promise<VerificationPublicKey[]>;
+  (requestOptions?: RequestOptions): Promise<VerificationKeysCache>;
 }
 
 interface VerifyRequestByKeyIdInterface {
@@ -27,7 +32,10 @@ interface VerifyRequestByKeyIdInterface {
     signature: string,
     keyId: string,
     requestOptions?: RequestOptions,
-  ): Promise<boolean>;
+  ): Promise<{
+    isValid: boolean;
+    cache: VerificationKeysCache;
+  }>;
 }
 
 // response types
@@ -188,7 +196,11 @@ export interface VerifyAndParseRequestInterface {
     signature: string,
     keyID: string,
     requestOptions?: RequestOptions,
-  ): Promise<{ isValidRequest: boolean; payload: CopilotRequestPayload }>;
+  ): Promise<{
+    isValidRequest: boolean;
+    payload: CopilotRequestPayload;
+    cache: VerificationKeysCache;
+  }>;
 }
 
 export interface GetUserMessageInterface {

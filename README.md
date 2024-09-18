@@ -23,7 +23,7 @@ We consider this SDK alpha software in terms of API stability, but we adhere to 
 ```js
 import { verifyRequestByKeyId } from "@copilot-extensions/preview-sdk";
 
-const payloadIsVerified = await verifyRequestByKeyId(
+const { isValid, cache } = await verifyRequestByKeyId(
   request.body,
   signature,
   keyId,
@@ -31,7 +31,8 @@ const payloadIsVerified = await verifyRequestByKeyId(
     token: process.env.GITHUB_TOKEN,
   },
 );
-// true or false
+// isValid: true or false
+// cache: { id, keys }
 ```
 
 ### Build a response
@@ -76,54 +77,82 @@ try {
 
 Verify the request payload using the provided signature and key ID. The method will request the public key from GitHub's API for the given keyId and then verify the payload.
 
-The `options` argument is optional. It can contain a `token` to authenticate the request to GitHub's API, or a custom `request` instance to use for the request.
+The `requestOptions` argument is optional. It can contain:
+
+- a `token` to authenticate the request to GitHub's API
+- a custom [octokit `request`](https://github.com/octokit/request.js) instance to use for the request
+- a `cache` to use cached keys
 
 ```js
 import { verifyRequestByKeyId } from "@copilot-extensions/preview-sdk";
 
-const payloadIsVerified = await verifyRequestByKeyId(
+const { isValid, cache } = await verifyRequestByKeyId(
   request.body,
   signature,
-  key,
+  keyId,
 );
 
 // with token
-await verifyRequestByKeyId(request.body, signature, key, { token: "ghp_1234" });
+const { isValid, cache } = await verifyRequestByKeyId(
+  request.body,
+  signature,
+  keyId,
+  { token: "ghp_1234" },
+);
 
 // with custom octokit request instance
-await verifyRequestByKeyId(request.body, signature, key, { request });
+const { isValid, cache } = await verifyRequestByKeyId(
+  request.body,
+  signature,
+  keyId,
+  { request },
+);
+
+// with cache
+const previousCache = {
+  id: "etag_value",
+  keys: [{ key_identifier: "key1", key: "public_key1", is_current: true }],
+};
+const { isValid, cache } = await verifyRequestByKeyId(
+  request.body,
+  signature,
+  keyId,
+  { cache: previousCache },
+);
 ```
 
 #### `async fetchVerificationKeys(options)`
 
-Fetches public keys for verifying copilot extension requests [from GitHub's API](https://api.github.com/meta/public_keys/copilot_api)
-and returns them as an array. The request can be made without authentication, with a token, or with a custom [octokit request](https://github.com/octokit/request.js) instance.
+Fetches public keys for verifying copilot extension requests [from GitHub's API](https://api.github.com/meta/public_keys/copilot_api) and returns them as an array. The request can be made without authentication, with a token, with a custom [octokit request](https://github.com/octokit/request.js) instance, or with a cache.
 
 ```js
 import { fetchVerificationKeys } from "@copilot-extensions/preview-sdk";
 
 // fetch without authentication
-const [current] = await fetchVerificationKeys();
+const { id, keys } = await fetchVerificationKeys();
 
 // with token
-const [current] = await fetchVerificationKeys({ token: "ghp_1234" });
+const { id, keys } = await fetchVerificationKeys({ token: "ghp_1234" });
 
 // with custom octokit request instance
-const [current] = await fetchVerificationKeys({ request });)
+const { id, keys } = await fetchVerificationKeys({ request });
+
+// with cache
+const cache = {
+  id: "etag_value",
+  keys: [{ key_identifier: "key1", key: "public_key1" }],
+};
+const { id, keys } = await fetchVerificationKeys({ cache });
 ```
 
-#### `async verifyRequestPayload(rawBody, signature, keyId)`
+#### `async verifyRequest(rawBody, signature, keyId)`
 
 Verify the request payload using the provided signature and key. Note that the raw body as received by GitHub must be passed, before any parsing.
 
 ```js
 import { verify } from "@copilot-extensions/preview-sdk";
 
-const payloadIsVerified = await verifyRequestPayload(
-  request.body,
-  signature,
-  key,
-);
+const payloadIsVerified = await verifyRequest(request.body, signature, key);
 // true or false
 ```
 
@@ -274,17 +303,22 @@ Convenience method to verify and parse a request in one go. It calls [`verifyReq
 ```js
 import { verifyAndParseRequest } from "@copilot-extensions/preview-sdk";
 
-const { isValidRequest, payload } = await verifyAndParseRequest(
-  request,
+const { isValidRequest, payload, cache } = await verifyAndParseRequest(
+  request.body,
   signature,
-  key,
+  keyId,
+  {
+    token: process.env.GITHUB_TOKEN,
+  },
 );
 
 if (!isValidRequest) {
   throw new Error("Request could not be verified");
 }
 
+// `isValidRequest` is a boolean.
 // `payload` has type support.
+// `cache` contains the id and keys used for verification.
 ```
 
 #### `getUserMessage()`

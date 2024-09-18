@@ -22,6 +22,14 @@ S0+XhEkTWUZEEznIVpS3rQseDTG6//gEWr4j9fY35+dGOxwOx3Z9mK3i7w==
 export const SIGNATURE =
   "MEYCIQC8aEmkYA/4EQrXEOi2OL9nfpbnrCxkMc6HrH7b6SogKgIhAIYBThcpzkCCswiV1+pOaPI+zFQF9ShG61puoKs9rJjq";
 
+export const publicKeys = [
+  {
+    key: CURRENT_PUBLIC_KEY,
+    key_identifier: KEY_ID,
+    is_current: true,
+  },
+];
+
 test("smoke", (t) => {
   t.is(typeof verifyRequestByKeyId, "function");
 });
@@ -44,20 +52,14 @@ test("verifyRequestByKeyId()", async (t) => {
     .reply(
       200,
       {
-        public_keys: [
-          {
-            key: CURRENT_PUBLIC_KEY,
-            key_identifier: KEY_ID,
-            is_current: true,
-          },
-        ],
+        public_keys: publicKeys,
       },
       {
         headers: {
           "content-type": "application/json",
           "x-request-id": "<request-id>",
         },
-      }
+      },
     );
   const testRequest = defaultRequest.defaults({
     request: { fetch: fetchMock },
@@ -67,7 +69,7 @@ test("verifyRequestByKeyId()", async (t) => {
     request: testRequest,
   });
 
-  t.deepEqual(result, true);
+  t.deepEqual(result, { isValid: true, cache: { id: "", keys: publicKeys } });
 });
 
 test("verifyRequestByKeyId() - throws if keyId not present in verification keys list", async (t) => {
@@ -101,7 +103,7 @@ test("verifyRequestByKeyId() - throws if keyId not present in verification keys 
           "content-type": "application/json",
           "x-request-id": "<request-id>",
         },
-      }
+      },
     );
   const testRequest = defaultRequest.defaults({
     request: { fetch: fetchMock },
@@ -115,7 +117,7 @@ test("verifyRequestByKeyId() - throws if keyId not present in verification keys 
       name: "Error",
       message:
         "[@copilot-extensions/preview-sdk] No public key found matching key identifier",
-    }
+    },
   );
 });
 
@@ -181,26 +183,13 @@ test("verifyRequest() - invalid", async (t) => {
   t.deepEqual(result, false);
 });
 
-test("fetchVerificationKeys()", async (t) => {
+test("fetchVerificationKeys() - without cache", async (t) => {
   const mockAgent = new MockAgent();
   function fetchMock(url, opts) {
     opts ||= {};
     opts.dispatcher = mockAgent;
     return fetch(url, opts);
   }
-
-  const publicKeys = [
-    {
-      key: "<key 1>",
-      key_identifier: "<key-id 1>",
-      is_current: true,
-    },
-    {
-      key: "<key 2>",
-      key_identifier: "<key-id 2>",
-      is_current: true,
-    },
-  ];
 
   mockAgent.disableNetConnect();
   const mockPool = mockAgent.get("https://api.github.com");
@@ -219,7 +208,7 @@ test("fetchVerificationKeys()", async (t) => {
           "content-type": "application/json",
           "x-request-id": "<request-id>",
         },
-      }
+      },
     );
   const testRequest = defaultRequest.defaults({
     request: { fetch: fetchMock },
@@ -229,7 +218,121 @@ test("fetchVerificationKeys()", async (t) => {
     request: testRequest,
   });
 
-  t.deepEqual(result, publicKeys);
+  t.deepEqual(result, { id: "", keys: publicKeys });
+});
+
+test("fetchVerificationKeys() - returns cached keys on 304 response", async (t) => {
+  const mockAgent = new MockAgent();
+  function fetchMock(url, opts) {
+    opts ||= {};
+    opts.dispatcher = mockAgent;
+    return fetch(url, opts);
+  }
+
+  mockAgent.disableNetConnect();
+  const mockPool = mockAgent.get("https://api.github.com");
+  mockPool
+    .intercept({
+      method: "get",
+      path: `/meta/public_keys/copilot_api`,
+    })
+    .reply(
+      304,
+      {},
+      {
+        headers: {
+          "content-type": "application/json",
+          "x-request-id": "<request-id>",
+        },
+      },
+    );
+  const testRequest = defaultRequest.defaults({
+    request: { fetch: fetchMock },
+  });
+
+  const cache = {
+    id: 'W/"db60f89fb432b6c2362ac024c9322df5e6e2a8326595f7c1d35f807767d66e85"',
+    keys: publicKeys,
+  };
+
+  const result = await fetchVerificationKeys({
+    request: testRequest,
+    cache,
+  });
+
+  t.deepEqual(result, cache);
+});
+
+test("fetchVerificationKeys() - populates and utilizes cache correctly", async (t) => {
+  const mockAgent = new MockAgent();
+  function fetchMock(url, opts) {
+    opts ||= {};
+    opts.dispatcher = mockAgent;
+    return fetch(url, opts);
+  }
+
+  mockAgent.disableNetConnect();
+  const mockPool = mockAgent.get("https://api.github.com");
+
+  // First request: respond with 200 and etag header
+  mockPool
+    .intercept({
+      method: "get",
+      path: `/meta/public_keys/copilot_api`,
+    })
+    .reply(
+      200,
+      {
+        public_keys: publicKeys,
+      },
+      {
+        headers: {
+          "content-type": "application/json",
+          etag: 'W/"db60f89fb432b6c2362ac024c9322df5e6e2a8326595f7c1d35f807767d66e85"',
+          "x-request-id": "<request-id>",
+        },
+      },
+    );
+
+  const testRequest = defaultRequest.defaults({
+    request: { fetch: fetchMock },
+  });
+
+  // First call to fetchVerificationKeys to populate the cache
+  const firstResult = await fetchVerificationKeys({
+    request: testRequest,
+  });
+
+  const expectedCache = {
+    id: 'W/"db60f89fb432b6c2362ac024c9322df5e6e2a8326595f7c1d35f807767d66e85"',
+    keys: publicKeys,
+  };
+  t.deepEqual(firstResult, expectedCache);
+
+  // Second request: respond with 304
+  mockPool
+    .intercept({
+      method: "get",
+      path: `/meta/public_keys/copilot_api`,
+    })
+    .reply(
+      304,
+      {},
+      {
+        headers: {
+          "content-type": "application/json",
+          "x-request-id": "<request-id>",
+        },
+      },
+    );
+
+  // Second call to fetchVerificationKeys with cache
+  const secondResult = await fetchVerificationKeys({
+    request: testRequest,
+    cache: expectedCache,
+  });
+
+  t.deepEqual(secondResult, expectedCache);
 });
 
 test("fetchVerificationKeys() - with token", async (t) => {
@@ -273,8 +376,9 @@ test("fetchVerificationKeys() - with token", async (t) => {
         headers: {
           "content-type": "application/json",
           "x-request-id": "<request-id>",
+          etag: 'W/"db60f89fb432b6c2362ac024c9322df5e6e2a8326595f7c1d35f807767d66e85"',
         },
-      }
+      },
     );
   const testRequest = defaultRequest.defaults({
     request: { fetch: fetchMock },
@@ -285,5 +389,19 @@ test("fetchVerificationKeys() - with token", async (t) => {
     request: testRequest,
   });
 
-  t.deepEqual(result, publicKeys);
+  t.deepEqual(result, {
+    id: 'W/"db60f89fb432b6c2362ac024c9322df5e6e2a8326595f7c1d35f807767d66e85"',
+    keys: [
+      {
+        is_current: true,
+        key: "<key 1>",
+        key_identifier: "<key-id 1>",
+      },
+      {
+        is_current: true,
+        key: "<key 2>",
+        key_identifier: "<key-id 2>",
+      },
+    ],
+  });
 });

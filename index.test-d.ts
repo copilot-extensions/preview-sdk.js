@@ -22,6 +22,7 @@ import {
   prompt,
   PromptResult,
   getFunctionCalls,
+  VerificationKeysCache,
 } from "./index.js";
 
 const token = "";
@@ -32,7 +33,10 @@ export async function verifyRequestByKeyIdTest(
   keyId: string,
 ) {
   const result = await verifyRequestByKeyId(rawBody, signature, keyId);
-  expectType<boolean>(result);
+  expectType<{
+    isValid: boolean;
+    cache: { id: string; keys: VerificationPublicKey[] };
+  }>(result);
 
   // @ts-expect-error - first 3 arguments are required
   verifyRequestByKeyId(rawBody, signature);
@@ -51,6 +55,11 @@ export async function verifyRequestByKeyIdTest(
 
   // accepts a request argument
   await verifyRequestByKeyId(rawBody, signature, keyId, { request });
+
+  // accepts a cache argument
+  await verifyRequestByKeyId(rawBody, signature, keyId, {
+    cache: { id: "test", keys: [] },
+  });
 }
 
 export async function verifyRequestTest(
@@ -76,13 +85,16 @@ export async function verifyRequestTest(
 
 export async function fetchVerificationKeysTest() {
   const result = await fetchVerificationKeys();
-  expectType<VerificationPublicKey[]>(result);
+  expectType<{ id: string; keys: VerificationPublicKey[] }>(result);
 
   // accepts a token argument
   await fetchVerificationKeys({ token });
 
   // accepts a request argument
   await fetchVerificationKeys({ request });
+
+  // accepts a cache argument
+  await fetchVerificationKeys({ cache: { id: "test", keys: [] } });
 }
 
 export function createAckEventTest() {
@@ -181,9 +193,11 @@ export async function verifyAndParseRequestTest(
   keyId: string,
 ) {
   const result = await verifyAndParseRequest(rawBody, signature, keyId);
-  expectType<{ isValidRequest: boolean; payload: CopilotRequestPayload }>(
-    result,
-  );
+  expectType<{
+    isValidRequest: boolean;
+    payload: CopilotRequestPayload;
+    cache: { id: string; keys: VerificationPublicKey[] };
+  }>(result);
 }
 
 export function getUserMessageTest(payload: CopilotRequestPayload) {
