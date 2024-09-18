@@ -263,6 +263,41 @@ test("fetchVerificationKeys() - returns cached keys on 304 response", async (t) 
   t.deepEqual(result, cache);
 });
 
+test("fetchVerificationKeys() - throws on non-ok response", async (t) => {
+  const mockAgent = new MockAgent();
+  function fetchMock(url, opts) {
+    opts ||= {};
+    opts.dispatcher = mockAgent;
+    return fetch(url, opts);
+  }
+
+  mockAgent.disableNetConnect();
+  const mockPool = mockAgent.get("https://api.github.com");
+  mockPool
+    .intercept({
+      method: "get",
+      path: `/meta/public_keys/copilot_api`,
+    })
+    .replyWithError(
+      new Error("Request failed with status code 500"),
+    );
+  const testRequest = defaultRequest.defaults({
+    request: { fetch: fetchMock },
+  });
+
+  const cache = {
+    id: 'W/"db60f89fb432b6c2362ac024c9322df5e6e2a8326595f7c1d35f807767d66e85"',
+    keys: publicKeys,
+  };
+
+  await t.throwsAsync(fetchVerificationKeys({
+    request: testRequest,
+    cache,
+  }),{
+    message: "Request failed with status code 500",
+  });
+});
+
 test("fetchVerificationKeys() - populates and utilizes cache correctly", async (t) => {
   const mockAgent = new MockAgent();
   function fetchMock(url, opts) {
