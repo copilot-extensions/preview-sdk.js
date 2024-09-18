@@ -59,7 +59,7 @@ test("verifyRequestByKeyId()", async (t) => {
           "content-type": "application/json",
           "x-request-id": "<request-id>",
         },
-      },
+      }
     );
   const testRequest = defaultRequest.defaults({
     request: { fetch: fetchMock },
@@ -70,6 +70,55 @@ test("verifyRequestByKeyId()", async (t) => {
   });
 
   t.deepEqual(result, { isValid: true, cache: { id: "", keys: publicKeys } });
+});
+
+test("verifyRequestByKeyId() - throws if keyId not present in verification keys list", async (t) => {
+  const mockAgent = new MockAgent();
+  function fetchMock(url, opts) {
+    opts ||= {};
+    opts.dispatcher = mockAgent;
+    return fetch(url, opts);
+  }
+
+  mockAgent.disableNetConnect();
+  const mockPool = mockAgent.get("https://api.github.com");
+  mockPool
+    .intercept({
+      method: "get",
+      path: `/meta/public_keys/copilot_api`,
+    })
+    .reply(
+      200,
+      {
+        public_keys: [
+          {
+            key: CURRENT_PUBLIC_KEY,
+            key_identifier: KEY_ID,
+            is_current: true,
+          },
+        ],
+      },
+      {
+        headers: {
+          "content-type": "application/json",
+          "x-request-id": "<request-id>",
+        },
+      }
+    );
+  const testRequest = defaultRequest.defaults({
+    request: { fetch: fetchMock },
+  });
+
+  await t.throwsAsync(
+    verifyRequestByKeyId(RAW_BODY, SIGNATURE, "wrong_key", {
+      request: testRequest,
+    }),
+    {
+      name: "Error",
+      message:
+        "[@copilot-extensions/preview-sdk] No public key found matching key identifier",
+    }
+  );
 });
 
 test("verifyRequestByKeyId() - invalid arguments", async (t) => {
@@ -159,7 +208,7 @@ test("fetchVerificationKeys() - without cache", async (t) => {
           "content-type": "application/json",
           "x-request-id": "<request-id>",
         },
-      },
+      }
     );
   const testRequest = defaultRequest.defaults({
     request: { fetch: fetchMock },
@@ -278,4 +327,60 @@ test("fetchVerificationKeys() - populates and utilizes cache correctly", async (
   });
 
   t.deepEqual(secondResult, expectedCache);
+});
+
+test("fetchVerificationKeys() - with token", async (t) => {
+  const mockAgent = new MockAgent();
+  function fetchMock(url, opts) {
+    opts ||= {};
+    opts.dispatcher = mockAgent;
+    return fetch(url, opts);
+  }
+
+  const publicKeys = [
+    {
+      key: "<key 1>",
+      key_identifier: "<key-id 1>",
+      is_current: true,
+    },
+    {
+      key: "<key 2>",
+      key_identifier: "<key-id 2>",
+      is_current: true,
+    },
+  ];
+
+  mockAgent.disableNetConnect();
+  const mockPool = mockAgent.get("https://api.github.com");
+  const token = "secr3t";
+  mockPool
+    .intercept({
+      method: "get",
+      path: `/meta/public_keys/copilot_api`,
+      headers: {
+        Authorization: `token ${token}`,
+      },
+    })
+    .reply(
+      200,
+      {
+        public_keys: publicKeys,
+      },
+      {
+        headers: {
+          "content-type": "application/json",
+          "x-request-id": "<request-id>",
+        },
+      }
+    );
+  const testRequest = defaultRequest.defaults({
+    request: { fetch: fetchMock },
+  });
+
+  const result = await fetchVerificationKeys({
+    token,
+    request: testRequest,
+  });
+
+  t.deepEqual(result, publicKeys);
 });
