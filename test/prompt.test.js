@@ -3,6 +3,7 @@ import test from "ava";
 import { MockAgent } from "undici";
 
 import { prompt, getFunctionCalls } from "../index.js";
+import { parsePromptArguments } from "../lib/prompt.js";
 
 test("smoke", (t) => {
   t.is(typeof prompt, "function");
@@ -478,4 +479,13 @@ test("does not include function calls", async (t) => {
   });
 
   t.deepEqual(result, []);
+});
+
+test("parsePromptArguments - uses Node fetch if no options.fetch passed as argument", (t) => {
+  const [parsedFetch] = parsePromptArguments(
+    "What is the capital of France?",
+    {}
+  );
+
+  t.deepEqual(fetch, parsedFetch);
 });
