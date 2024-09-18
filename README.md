@@ -97,7 +97,7 @@ const { isValid, cache } = await verifyRequestByKeyId(
   request.body,
   signature,
   keyId,
-  { token: "ghp_1234" }
+  { token: "ghp_1234" },
 );
 
 // with custom octokit request instance
@@ -105,16 +105,19 @@ const { isValid, cache } = await verifyRequestByKeyId(
   request.body,
   signature,
   keyId,
-  { request }
+  { request },
 );
 
 // with cache
-const previousCache = { id: "etag_value", keys: [{ key_identifier: "key1", key: "public_key1", is_current: true }] };
+const previousCache = {
+  id: "etag_value",
+  keys: [{ key_identifier: "key1", key: "public_key1", is_current: true }],
+};
 const { isValid, cache } = await verifyRequestByKeyId(
   request.body,
   signature,
   keyId,
-  { cache: previousCache }
+  { cache: previousCache },
 );
 ```
 
@@ -135,7 +138,10 @@ const { id, keys } = await fetchVerificationKeys({ token: "ghp_1234" });
 const { id, keys } = await fetchVerificationKeys({ request });
 
 // with cache
-const cache = { id: "etag_value", keys: [{ key_identifier: "key1", key: "public_key1" }] };
+const cache = {
+  id: "etag_value",
+  keys: [{ key_identifier: "key1", key: "public_key1" }],
+};
 const { id, keys } = await fetchVerificationKeys({ cache });
 ```
 
@@ -146,11 +152,7 @@ Verify the request payload using the provided signature and key. Note that the r
 ```js
 import { verify } from "@copilot-extensions/preview-sdk";
 
-const payloadIsVerified = await verifyRequest(
-  request.body,
-  signature,
-  key,
-);
+const payloadIsVerified = await verifyRequest(request.body, signature, key);
 // true or false
 ```
 
@@ -307,7 +309,7 @@ const { isValidRequest, payload, cache } = await verifyAndParseRequest(
   keyId,
   {
     token: process.env.GITHUB_TOKEN,
-  }
+  },
 );
 
 if (!isValidRequest) {

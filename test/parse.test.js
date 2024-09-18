@@ -78,7 +78,7 @@ test("verifyAndParseRequest()", async (t) => {
           "content-type": "application/json",
           "x-request-id": "<request-id>",
         },
-      }
+      },
     );
   const testRequest = defaultRequest.defaults({
     request: { fetch: fetchMock },
@@ -88,14 +88,17 @@ test("verifyAndParseRequest()", async (t) => {
     request: testRequest,
   });
 
-  t.deepEqual({
-    isValidRequest: true,
-    payload: JSON.parse(RAW_BODY),
-    cache: {
-      id: "",
-      keys: publicKeys,
+  t.deepEqual(
+    {
+      isValidRequest: true,
+      payload: JSON.parse(RAW_BODY),
+      cache: {
+        id: "",
+        keys: publicKeys,
+      },
     },
-  }, result);
+    result,
+  );
 });
 
 test("getUserMessage()", (t) => {
@@ -140,7 +143,7 @@ test("getUserConfirmation()", (t) => {
       id: "some-confirmation-id",
       metadata: { someConfirmationMetadata: "value" },
     },
-    result
+    result,
   );
 });
 
