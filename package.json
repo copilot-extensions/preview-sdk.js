@@ -26,7 +26,7 @@
   },
   "scripts": {
     "test": "npm run test:code && npm run test:tsc && npm run test:types",
-    "test:code": "c8 --check-coverage --lines 80 --functions 80 --branches 80 --statements 80 ava test/*.test.js",
+    "test:code": "c8 --100 ava test/*.test.js",
     "test:code:update-snapshots": "ava --update-snapshots",
     "test:tsc": "tsc --allowJs --noEmit --esModuleInterop --skipLibCheck --lib es2020 index.js",
     "test:types": "tsd",
