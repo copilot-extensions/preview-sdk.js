@@ -376,7 +376,7 @@ test("fetchVerificationKeys() - with token", async (t) => {
         headers: {
           "content-type": "application/json",
           "x-request-id": "<request-id>",
-          etag: 'W/"123"',
+          etag: 'W/"db60f89fb432b6c2362ac024c9322df5e6e2a8326595f7c1d35f807767d66e85"',
         },
       },
     );
@@ -390,7 +390,7 @@ test("fetchVerificationKeys() - with token", async (t) => {
   });
 
   t.deepEqual(result, {
-    id: 'W/"123"',
+    id: 'W/"db60f89fb432b6c2362ac024c9322df5e6e2a8326595f7c1d35f807767d66e85"',
     keys: [
       {
         is_current: true,
