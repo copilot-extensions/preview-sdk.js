@@ -12,7 +12,7 @@ const server = createServer((request, response) => {
     return response.end("ok");
   }
 
-  response.write(createTextEvent("Hello, Francis Fuzz!"));
+  response.write(createTextEvent("Hello, world!"));
   response.end(createDoneEvent());
 });
 
