@@ -3,6 +3,7 @@ import test from "ava";
 import { MockAgent } from "undici";
 
 import { prompt, getFunctionCalls } from "../index.js";
+import { parsePromptArguments } from "../lib/prompt.js";
 
 test("smoke", (t) => {
   t.is(typeof prompt, "function");
@@ -478,4 +479,59 @@ test("does not include function calls", async (t) => {
   });
 
   t.deepEqual(result, []);
+});
+
+test("parsePromptArguments - uses Node fetch if no options.fetch passed as argument", (t) => {
+  const [parsedFetch] = parsePromptArguments(
+    "What is the capital of France?",
+    {}
+  );
+
+  t.deepEqual(fetch, parsedFetch);
+});
+
+test("prompt.stream", async (t) => {
+  const mockAgent = new MockAgent();
+  function fetchMock(url, opts) {
+    opts ||= {};
+    opts.dispatcher = mockAgent;
+    return fetch(url, opts);
+  }
+
+  mockAgent.disableNetConnect();
+  const mockPool = mockAgent.get("https://api.githubcopilot.com");
+  mockPool
+    .intercept({
+      method: "post",
+      path: `/chat/completions`,
+    })
+    .reply(200, "<response text>", {
+      headers: {
+        "content-type": "text/plain",
+        "x-request-id": "<request-id>",
+      },
+    });
+
+  const { requestId, stream } = await prompt.stream(
+    "What is the capital of France?",
+    {
+      token: "secret",
+      request: {
+        fetch: fetchMock,
+      },
+    }
+  );
+
+  t.is(requestId, "<request-id>");
+
+  let data = "";
+  const reader = stream.getReader();
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    data += new TextDecoder().decode(value);
+  }
+
+  t.deepEqual(data, "<response text>");
 });
