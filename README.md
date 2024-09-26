@@ -188,7 +188,7 @@ Ask the user to confirm an action. The `confirmation` event should only be sent 
 
 The `meta` data object will be sent along the user's response.
 
-See additional documentation about [Copilot confirmations](https://docs.github.com/en/copilot/building-copilot-extensions/building-a-copilot-agent-for-your-copilot-extension/configuring-your-copilot-agent-to-communicate-with-the-copilot-platform#copilot_confirmation).
+See additional documentation about the [Copilot confirmation SSE](https://docs.github.com/en/copilot/building-copilot-extensions/building-a-copilot-agent-for-your-copilot-extension/configuring-your-copilot-agent-to-communicate-with-the-copilot-platform#copilot_confirmation).
 
 ```js
 import { createConfirmationEvent } from "@copilot-extensions/preview-sdk";
