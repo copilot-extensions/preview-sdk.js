@@ -461,7 +461,7 @@ Works the same way as `prompt()`, but resolves with a `stream` key instead of a 
 ```js
 import { prompt } from "@copilot-extensions/preview-sdk";
 
-const { requestId, stream } = prompt.stream("What is the capital of France?", {
+const { requestId, stream } = await prompt.stream("What is the capital of France?", {
   token: process.env.TOKEN,
 });
 
