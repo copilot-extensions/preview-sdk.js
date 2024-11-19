@@ -1,8 +1,10 @@
-# `@copilot-extensions/preview-sdk`
+# Preview SDK
 
-This SDK simplifies the process of building GitHub Copilot Extensions. Building Copilot Extensions previously required manual handling of request verification, response formatting, and API interactions. This SDK simplifies these tasks, allowing you to focus on your extension's core functionality rather than building boilerplate code. Use it to integrate your tools, APIs, or data sources directly into Copilot Chat.
+This SDK simplifies the process of building an GitHub Copilot Extension as an agent. Building Copilot Extensions previously required manual handling of request verification, response formatting, and API interactions. This SDK simplifies these tasks, allowing you to focus on your extension's core functionality rather than building boilerplate code. Use it to integrate your tools, APIs, or data sources directly into Copilot Chat.
 
 We consider this SDK alpha software in terms of API stability, but we adhere to semantic-versioning, so it's safe to use today.
+
+> Note: This SDK does not apply to skillset extensions. It only applies to developing an agent extension. For more info, see the [docs on skillsets and agents](https://docs.github.com/en/copilot/building-copilot-extensions/about-building-copilot-extensions#about-skillsets-and-agents).
 
 ## Key features
 
