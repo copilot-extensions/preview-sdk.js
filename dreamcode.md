@@ -70,6 +70,69 @@ createServer(createNodeMiddleware(agent)).listen(3000);
 agent.log.info("Listening on http://localhost:3000");
 ```
 
+### Transform stream
+
+As this sdk will be primarily used as a tool to call LLMs and forward these calls to copilot chat, it would be advantageous to have a function that transforms this stream into copilot events.
+
+```ts
+export async function chat(
+  request: HttpRequest,
+  context: InvocationContext,
+): Promise<HttpResponseInit> {
+  // verify git request
+  // get payload
+  const message = getContentFromPayload();
+
+  return {
+    body: Readable.from(callEnterpriseLLM(message, context))
+  }
+}
+
+async function* callEnterpriseLLM(message: string, context: InvocationContext) {
+  yield createAckEvent();
+  const baseUrl = process.env.LLM_BASE_URL;
+  // Call enterprise endpoint, which is able to SSE stream a response
+  const enterpriseResponse = await fetch(baseUrl + '/api/v1/chat', {
+    method: "POST",
+    body: JSON.stringify({
+      question: message,
+      stream: true
+    })
+  })
+  // Now while reading the stream, transform each event / data item (SSE) into copilot events
+  // parseChunk() - function to parse a Server-Sent Event (SSE) into its event and data components
+  const stream = enterpriseResponse.body.getReader();
+  for await (const chunk of stream) {
+    const (event, data) = parseChunk(chunk);
+    switch (event) {
+      case "event-type-1":
+        yield createTextEvent(JSON.parse(data).text);
+        break;
+      case "event-type-2":
+        yield createReferencesEvent( transformLLMDataToReference(data) )
+        break;
+      default:
+        console.log(`Found unidentified llm event-type: ${event}`)
+    }
+  }
+  // Even cooler would be, if it would be possible to pipe this transformation into the readable stream like this:
+  await enterpriseResponse.body.getReader().transformToCopilotEvents((event, data) => {
+    switch (event) {
+      case "event-type-1":
+        yield createTextEvent(JSON.parse(data).text);
+        break;
+      case "event-type-2":
+        yield createReferencesEvent( transformLLMDataToReference(data) )
+        break;
+      default:
+        console.log(`Found unidentified llm event-type: ${event}`)
+    }
+  });
+  
+  yield createDoneEvent();
+}
+```
+
 ### Book a flight
 
 I'm using [@daveebbelaar](https://github.com/daveebbelaar)'s example of a flight booking agent that they demonstrate at https://www.youtube.com/watch?v=aqdWSYWC_LI
