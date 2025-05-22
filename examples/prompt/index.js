@@ -32,8 +32,8 @@ async function handler(request, response) {
 
   // Collect incoming data chunks to use in the `on("end")` event
   const body = await getBody(request);
-  const signature = String(request.headers["github-public-key-signature"]);
-  const keyID = String(request.headers["github-public-key-identifier"]);
+  const signature = String(request.headers["x-github-public-key-signature"]);
+  const keyID = String(request.headers["x-github-public-key-identifier"]);
 
   try {
     const { isValidRequest, payload } = await verifyAndParseRequest(
