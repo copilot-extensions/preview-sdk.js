@@ -10,6 +10,9 @@ import {
 // Define the port to listen on
 const PORT = 3000;
 
+// Cache for verification keys to improve performance
+let verificationKeysCache = { id: "", keys: [] };
+
 // Define the handler function
 async function handler(request, response) {
   console.log(`Received [${request.method}] to [${request.url}]`);
@@ -36,14 +39,17 @@ async function handler(request, response) {
   const keyID = String(request.headers["github-public-key-identifier"]);
 
   try {
-    const { isValidRequest, payload } = await verifyAndParseRequest(
+    const { isValidRequest, payload, cache } = await verifyAndParseRequest(
       body,
       signature,
       keyID,
       {
         token: tokenForUser,
+        cache: verificationKeysCache, 
       },
     );
+
+    verificationKeysCache = cache;
 
     if (!isValidRequest) {
       console.error("Request verification failed");
